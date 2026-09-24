@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "suite_id": "latency-finalization-v1",
+  "purpose": "Fixed synthetic browser checks for the transcript-finalization latency patch. These are test definitions, not measured results.",
+  "comparison": "Compare STT_FINALIZE_TRANSCRIPTS=false and true in separate server runs. Keep models, TTS instructions/voice, language prompt, microphone and playback device fixed. Restart the server for each mode. Start a fresh browser session and use the cases in order. Do not tune settings within the set.",
+  "measurements": [
+    "Committed transcript completeness and order",
+    "Missing, interrupted, repeated or prematurely started responses",
+    "STT finalization metadata and user-turn commit time",
+    "Server-observed time from speech end to first bot speech"
+  ],
+  "cases": [
+    {"id": "short_english_question", "group": "plain", "utterance": "What is two plus three?", "check": "One complete transcript and a response after the question ends."},
+    {"id": "english_greeting", "group": "plain", "utterance": "Hi, can you hear me?", "check": "One complete transcript and a response, without waiting for the safety timer when finalization is ready."},
+    {"id": "short_hindi_question", "group": "plain", "utterance": "दो और तीन कितने होते हैं?", "check": "Preserve the Hindi question and do not cut off its final words."},
+    {"id": "mid_sentence_pause", "group": "pause", "utterance": "Tell me about ... Bangalore.", "delivery": "Pause for approximately 0.8 seconds at the ellipsis; do not say the ellipsis.", "check": "Keep both parts in order. An incomplete first part must not cause a reply before the ending."},
+    {"id": "spoken_correction", "group": "correction", "utterance": "Tell me about Mumbai ... actually, Bangalore.", "delivery": "Pause for approximately 0.5 seconds at the ellipsis, then continue.", "check": "Preserve the correction in the committed text and answer the corrected request, not a reordered or truncated transcript."},
+    {"id": "barge_in", "group": "interruption", "utterance": "Explain the solar system in two sentences.", "interrupt_with": "Stop. What is two plus three?", "check": "Interrupt after the bot starts speaking. Old output should stop, and the new question should receive one response."}
+  ],
+  "reporting": "Report plain-question counts and median/range separately from pauses, corrections and interruptions. Include failures and missing responses, not only successful timed responses. Repeat the same frozen set if more samples are needed; do not claim a controlled comparison from different conversations."
+}

@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "suite_id": "tts-naturalness-v1",
+  "purpose": "Fixed synthetic listening inputs for delivery instructions versus no instructions. These are test specifications, not measured quality results.",
+  "comparison": "Keep model gpt-4o-mini-tts, voice coral, numeric speed, input text, text chunking, and playback device unchanged. Compare default instructions against TTS_INSTRUCTIONS=off. Do not change voices or tune instructions within this set before reviewing the results.",
+  "checks": [
+    "Faithful wording and language; no added or omitted words",
+    "Natural pronunciation of Hindi and English words",
+    "Smooth transitions between languages",
+    "Natural intonation and pauses, without flat or exaggerated delivery"
+  ],
+  "cases": [
+    {
+      "id": "english_conversation",
+      "language": "en",
+      "text": "Yes, I can help. Tell me what you would like to know."
+    },
+    {
+      "id": "hindi_conversation",
+      "language": "hi",
+      "text": "हाँ, ज़रूर। आप क्या जानना चाहते हैं?"
+    },
+    {
+      "id": "hinglish_transitions",
+      "language": "hinglish",
+      "text": "ठीक है, पहले details check करते हैं, फिर अगला step देखेंगे।"
+    },
+    {
+      "id": "hinglish_names_and_time",
+      "language": "hinglish",
+      "text": "Aarav और Meera की meeting कल दोपहर तीन बजे है।"
+    }
+  ]
+}

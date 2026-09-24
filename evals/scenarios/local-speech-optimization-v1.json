@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "suite_id": "local-speech-optimization-v1",
+  "purpose": "Fixed synthetic, offline Kokoro CPU benchmark inputs. This fixture contains no patient, microphone, browser, or conversation data.",
+  "provider_policy": "Create cache-only local Kokoro CPU engines. Do not download models, call hosted providers, read .env, or infer browser/end-to-end latency.",
+  "cases": [
+    {
+      "id": "short_english",
+      "text": "Your appointment is confirmed for tomorrow at ten thirty."
+    },
+    {
+      "id": "long_english",
+      "text": "Please bring your previous reports, prescriptions, and insurance card to the clinic tomorrow, and arrive fifteen minutes early for check-in."
+    },
+    {
+      "id": "hindi",
+      "text": "कृपया अपनी मुलाकात के लिए कल सुबह पंद्रह मिनट पहले पहुँचें और पिछली जाँच की रिपोर्ट साथ लाएँ।"
+    },
+    {
+      "id": "mixed_hindi_english",
+      "text": "कृपया कल morning appointment के लिए reports और insurance card साथ लाएँ।"
+    }
+  ]
+}

@@ -1,0 +1,3345 @@
+{
+  "dataset_version": "synthetic-clinic-v1",
+  "reference_time": "2026-09-17T09:00:00Z",
+  "notice": "All people, records, clinical statements and predictions are synthetic, fictional software-test fixtures. They are not medical advice or measured model results. No images or embeddings were generated.",
+  "tables": {
+    "patients": [
+      {
+        "patient_id": "SYN-P001",
+        "display_name": "Arjun Sharma",
+        "date_of_birth": "1988-02-14",
+        "is_synthetic": true,
+        "record_version": 1,
+        "created_at": "2026-09-01T00:00:00Z",
+        "updated_at": "2026-09-01T00:00:00Z"
+      },
+      {
+        "patient_id": "SYN-P002",
+        "display_name": "Arjun Sharma",
+        "date_of_birth": "1996-09-21",
+        "is_synthetic": true,
+        "record_version": 1,
+        "created_at": "2026-09-01T00:00:00Z",
+        "updated_at": "2026-09-01T00:00:00Z"
+      },
+      {
+        "patient_id": "SYN-P003",
+        "display_name": "Arun Sharma",
+        "date_of_birth": "1979-07-08",
+        "is_synthetic": true,
+        "record_version": 1,
+        "created_at": "2026-09-01T00:00:00Z",
+        "updated_at": "2026-09-01T00:00:00Z"
+      },
+      {
+        "patient_id": "SYN-P004",
+        "display_name": "Ananya Rao",
+        "date_of_birth": "1990-05-12",
+        "is_synthetic": true,
+        "record_version": 1,
+        "created_at": "2026-09-01T00:00:00Z",
+        "updated_at": "2026-09-01T00:00:00Z"
+      },
+      {
+        "patient_id": "SYN-P005",
+        "display_name": "Anaya Rao",
+        "date_of_birth": "1984-11-03",
+        "is_synthetic": true,
+        "record_version": 1,
+        "created_at": "2026-09-01T00:00:00Z",
+        "updated_at": "2026-09-01T00:00:00Z"
+      },
+      {
+        "patient_id": "SYN-P006",
+        "display_name": "Kabir Das",
+        "date_of_birth": "2001-01-17",
+        "is_synthetic": true,
+        "record_version": 1,
+        "created_at": "2026-09-01T00:00:00Z",
+        "updated_at": "2026-09-01T00:00:00Z"
+      },
+      {
+        "patient_id": "SYN-P007",
+        "display_name": "Meera Iyer",
+        "date_of_birth": "1993-04-06",
+        "is_synthetic": true,
+        "record_version": 1,
+        "created_at": "2026-09-01T00:00:00Z",
+        "updated_at": "2026-09-01T00:00:00Z"
+      },
+      {
+        "patient_id": "SYN-P008",
+        "display_name": "Nikhil Sen",
+        "date_of_birth": "1986-12-09",
+        "is_synthetic": true,
+        "record_version": 1,
+        "created_at": "2026-09-01T00:00:00Z",
+        "updated_at": "2026-09-01T00:00:00Z"
+      },
+      {
+        "patient_id": "SYN-P009",
+        "display_name": "Sara Khan",
+        "date_of_birth": "1998-08-25",
+        "is_synthetic": true,
+        "record_version": 1,
+        "created_at": "2026-09-01T00:00:00Z",
+        "updated_at": "2026-09-01T00:00:00Z"
+      },
+      {
+        "patient_id": "SYN-P010",
+        "display_name": "Rohan Patel",
+        "date_of_birth": "1975-03-30",
+        "is_synthetic": true,
+        "record_version": 1,
+        "created_at": "2026-09-01T00:00:00Z",
+        "updated_at": "2026-09-01T00:00:00Z"
+      },
+      {
+        "patient_id": "SYN-P011",
+        "display_name": "Asha Nair",
+        "date_of_birth": "1991-06-15",
+        "is_synthetic": true,
+        "record_version": 1,
+        "created_at": "2026-09-01T00:00:00Z",
+        "updated_at": "2026-09-01T00:00:00Z"
+      },
+      {
+        "patient_id": "SYN-P012",
+        "display_name": "Dev Mehta",
+        "date_of_birth": null,
+        "is_synthetic": true,
+        "record_version": 1,
+        "created_at": "2026-09-01T00:00:00Z",
+        "updated_at": "2026-09-01T00:00:00Z"
+      }
+    ],
+    "clinicians": [
+      {
+        "clinician_id": "SYN-CLIN-01",
+        "display_name": "Dr Mira Desai",
+        "is_synthetic": true,
+        "created_at": "2026-09-01T00:00:00Z"
+      },
+      {
+        "clinician_id": "SYN-CLIN-02",
+        "display_name": "Dr Dev Kapoor",
+        "is_synthetic": true,
+        "created_at": "2026-09-01T00:00:00Z"
+      },
+      {
+        "clinician_id": "SYN-CLIN-03",
+        "display_name": "Dr Leena Rao",
+        "is_synthetic": true,
+        "created_at": "2026-09-01T00:00:00Z"
+      }
+    ],
+    "app_users": [
+      {
+        "user_id": "SYN-USER-CLIN",
+        "display_name": "Synthetic clinician user",
+        "role": "clinician",
+        "is_active": true,
+        "created_at": "2026-09-01T00:00:00Z"
+      },
+      {
+        "user_id": "SYN-USER-STAFF",
+        "display_name": "Synthetic clinic staff user",
+        "role": "staff",
+        "is_active": true,
+        "created_at": "2026-09-01T00:00:00Z"
+      },
+      {
+        "user_id": "SYN-USER-INACTIVE",
+        "display_name": "Inactive synthetic clinician",
+        "role": "clinician",
+        "is_active": false,
+        "created_at": "2026-09-01T00:00:00Z"
+      }
+    ],
+    "cases": [
+      {
+        "case_id": "1042",
+        "patient_id": "SYN-P001",
+        "description": "SYNTHETIC TEST CASE: Normal reviewed report and booked follow-up",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1043",
+        "patient_id": "SYN-P002",
+        "description": "SYNTHETIC TEST CASE: Similar case ID and identical patient name",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1044",
+        "patient_id": "SYN-P003",
+        "description": "SYNTHETIC TEST CASE: Case without studies",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1045",
+        "patient_id": "SYN-P004",
+        "description": "SYNTHETIC TEST CASE: Case with fifteen studies",
+        "status": "open",
+        "opened_at": "2026-06-30T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-06-30T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1046",
+        "patient_id": "SYN-P005",
+        "description": "SYNTHETIC TEST CASE: Two studies on the same date and body part",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1047",
+        "patient_id": "SYN-P006",
+        "description": "SYNTHETIC TEST CASE: Scheduled examination not yet performed",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1048",
+        "patient_id": "SYN-P007",
+        "description": "SYNTHETIC TEST CASE: Cancelled examination",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1049",
+        "patient_id": "SYN-P008",
+        "description": "SYNTHETIC TEST CASE: Completed study with unknown examination time and side",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1050",
+        "patient_id": "SYN-P001",
+        "description": "SYNTHETIC TEST CASE: A different injury episode for the patient in case 1042",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1051",
+        "patient_id": "SYN-P010",
+        "description": "SYNTHETIC TEST CASE: Study without a model result",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1052",
+        "patient_id": "SYN-P011",
+        "description": "SYNTHETIC TEST CASE: Current pending model result with an older completed prediction",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1053",
+        "patient_id": "SYN-P012",
+        "description": "SYNTHETIC TEST CASE: Current failed model result with an older completed prediction",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1054",
+        "patient_id": "SYN-P001",
+        "description": "SYNTHETIC TEST CASE: Current and historical completed model versions",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1055",
+        "patient_id": "SYN-P002",
+        "description": "SYNTHETIC TEST CASE: Historical model result only, no current result",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1056",
+        "patient_id": "SYN-P003",
+        "description": "SYNTHETIC TEST CASE: Model result without a score or summary",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1057",
+        "patient_id": "SYN-P004",
+        "description": "SYNTHETIC TEST CASE: Completed model result with no findings or summary",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1058",
+        "patient_id": "SYN-P005",
+        "description": "SYNTHETIC TEST CASE: Model prediction exists but reviewed report is absent",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1059",
+        "patient_id": "SYN-P006",
+        "description": "SYNTHETIC TEST CASE: Only an unreviewed draft report exists",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1060",
+        "patient_id": "SYN-P007",
+        "description": "SYNTHETIC TEST CASE: A revised report changes an older reviewed conclusion",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1061",
+        "patient_id": "SYN-P008",
+        "description": "SYNTHETIC TEST CASE: Superseded reviewed report only, no current report",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1062",
+        "patient_id": "SYN-P009",
+        "description": "SYNTHETIC TEST CASE: Withdrawn reviewed report only",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1063",
+        "patient_id": "SYN-P010",
+        "description": "SYNTHETIC TEST CASE: Model prediction disagrees with reviewed findings",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1064",
+        "patient_id": "SYN-P011",
+        "description": "SYNTHETIC TEST CASE: Reviewed report with missing text sections",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1065",
+        "patient_id": "SYN-P012",
+        "description": "SYNTHETIC TEST CASE: Multiple upcoming booked follow-ups",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1066",
+        "patient_id": "SYN-P001",
+        "description": "SYNTHETIC TEST CASE: Closed case with past appointments only",
+        "status": "closed",
+        "opened_at": "2026-08-01T08:00:00Z",
+        "closed_at": "2026-08-30T12:00:00Z",
+        "record_version": 1,
+        "created_at": "2026-08-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1067",
+        "patient_id": "SYN-P002",
+        "description": "SYNTHETIC TEST CASE: Future follow-up is cancelled",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1068",
+        "patient_id": "SYN-P003",
+        "description": "SYNTHETIC TEST CASE: Cancelled booking and active rescheduled replacement",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1069",
+        "patient_id": "SYN-P004",
+        "description": "SYNTHETIC TEST CASE: Overlapping active follow-ups at different locations",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1070",
+        "patient_id": "SYN-P005",
+        "description": "SYNTHETIC TEST CASE: Booked follow-up with missing optional details",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1071",
+        "patient_id": "SYN-P006",
+        "description": "SYNTHETIC TEST CASE: Report recommends follow-up but none is booked",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "case_id": "1072",
+        "patient_id": "SYN-P007",
+        "description": "SYNTHETIC TEST CASE: Only a different appointment type is booked",
+        "status": "open",
+        "opened_at": "2026-09-01T08:00:00Z",
+        "closed_at": null,
+        "record_version": 1,
+        "created_at": "2026-09-01T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      }
+    ],
+    "studies": [
+      {
+        "study_id": "ST-1042-01",
+        "case_id": "1042",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1043-01",
+        "case_id": "1043",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "knee",
+        "laterality": "right",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1045-01",
+        "case_id": "1045",
+        "performed_at": "2026-07-01T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-07-01T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1045-02",
+        "case_id": "1045",
+        "performed_at": "2026-07-06T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-07-06T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1045-03",
+        "case_id": "1045",
+        "performed_at": "2026-07-11T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-07-11T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1045-04",
+        "case_id": "1045",
+        "performed_at": "2026-07-16T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-07-16T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1045-05",
+        "case_id": "1045",
+        "performed_at": "2026-07-21T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-07-21T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1045-06",
+        "case_id": "1045",
+        "performed_at": "2026-07-26T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-07-26T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1045-07",
+        "case_id": "1045",
+        "performed_at": "2026-07-31T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-07-31T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1045-08",
+        "case_id": "1045",
+        "performed_at": "2026-08-05T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-08-05T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1045-09",
+        "case_id": "1045",
+        "performed_at": "2026-08-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-08-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1045-10",
+        "case_id": "1045",
+        "performed_at": "2026-08-15T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-08-15T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1045-11",
+        "case_id": "1045",
+        "performed_at": "2026-08-20T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-08-20T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1045-12",
+        "case_id": "1045",
+        "performed_at": "2026-08-25T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-08-25T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1045-13",
+        "case_id": "1045",
+        "performed_at": "2026-08-30T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-08-30T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1045-14",
+        "case_id": "1045",
+        "performed_at": "2026-09-04T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-04T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1045-15",
+        "case_id": "1045",
+        "performed_at": "2026-09-09T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-09T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1046-01",
+        "case_id": "1046",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1046-02",
+        "case_id": "1046",
+        "performed_at": "2026-09-10T10:45:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T10:45:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1047-01",
+        "case_id": "1047",
+        "performed_at": null,
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "scheduled",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1048-01",
+        "case_id": "1048",
+        "performed_at": null,
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "cancelled",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1049-01",
+        "case_id": "1049",
+        "performed_at": null,
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "unknown",
+        "views": [],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1050-01",
+        "case_id": "1050",
+        "performed_at": "2026-09-12T08:15:00Z",
+        "modality": "XR",
+        "body_part": "knee",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-12T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1051-01",
+        "case_id": "1051",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1052-01",
+        "case_id": "1052",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1053-01",
+        "case_id": "1053",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1054-01",
+        "case_id": "1054",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1055-01",
+        "case_id": "1055",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1056-01",
+        "case_id": "1056",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1057-01",
+        "case_id": "1057",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1058-01",
+        "case_id": "1058",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1059-01",
+        "case_id": "1059",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1060-01",
+        "case_id": "1060",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1061-01",
+        "case_id": "1061",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1062-01",
+        "case_id": "1062",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1063-01",
+        "case_id": "1063",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1064-01",
+        "case_id": "1064",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1065-01",
+        "case_id": "1065",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1066-01",
+        "case_id": "1066",
+        "performed_at": "2026-08-05T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-08-05T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1067-01",
+        "case_id": "1067",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1068-01",
+        "case_id": "1068",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1069-01",
+        "case_id": "1069",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1070-01",
+        "case_id": "1070",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1071-01",
+        "case_id": "1071",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "study_id": "ST-1072-01",
+        "case_id": "1072",
+        "performed_at": "2026-09-10T08:15:00Z",
+        "modality": "XR",
+        "body_part": "wrist",
+        "laterality": "left",
+        "views": [
+          "AP",
+          "lateral"
+        ],
+        "acquisition_status": "completed",
+        "image_ref": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T08:15:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      }
+    ],
+    "model_results": [
+      {
+        "model_result_id": "MR-1042-01-V1",
+        "study_id": "ST-1042-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1043-01-V1",
+        "study_id": "ST-1043-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible right patellar fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1045-01-V1",
+        "study_id": "ST-1045-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-07-01T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-07-01T08:16:00Z",
+        "updated_at": "2026-07-01T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1045-02-V1",
+        "study_id": "ST-1045-02",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-07-06T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-07-06T08:16:00Z",
+        "updated_at": "2026-07-06T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1045-03-V1",
+        "study_id": "ST-1045-03",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-07-11T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-07-11T08:16:00Z",
+        "updated_at": "2026-07-11T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1045-04-V1",
+        "study_id": "ST-1045-04",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-07-16T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-07-16T08:16:00Z",
+        "updated_at": "2026-07-16T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1045-05-V1",
+        "study_id": "ST-1045-05",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-07-21T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-07-21T08:16:00Z",
+        "updated_at": "2026-07-21T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1045-06-V1",
+        "study_id": "ST-1045-06",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-07-26T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-07-26T08:16:00Z",
+        "updated_at": "2026-07-26T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1045-07-V1",
+        "study_id": "ST-1045-07",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-07-31T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-07-31T08:16:00Z",
+        "updated_at": "2026-07-31T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1045-08-V1",
+        "study_id": "ST-1045-08",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-08-05T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-08-05T08:16:00Z",
+        "updated_at": "2026-08-05T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1045-09-V1",
+        "study_id": "ST-1045-09",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-08-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-08-10T08:16:00Z",
+        "updated_at": "2026-08-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1045-10-V1",
+        "study_id": "ST-1045-10",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-08-15T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-08-15T08:16:00Z",
+        "updated_at": "2026-08-15T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1045-11-V1",
+        "study_id": "ST-1045-11",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-08-20T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-08-20T08:16:00Z",
+        "updated_at": "2026-08-20T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1045-12-V1",
+        "study_id": "ST-1045-12",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-08-25T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-08-25T08:16:00Z",
+        "updated_at": "2026-08-25T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1045-13-V1",
+        "study_id": "ST-1045-13",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-08-30T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-08-30T08:16:00Z",
+        "updated_at": "2026-08-30T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1045-14-V1",
+        "study_id": "ST-1045-14",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-04T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-04T08:16:00Z",
+        "updated_at": "2026-09-04T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1045-15-V1",
+        "study_id": "ST-1045-15",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-09T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-09T08:16:00Z",
+        "updated_at": "2026-09-09T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1046-01-V1",
+        "study_id": "ST-1046-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1046-02-V1",
+        "study_id": "ST-1046-02",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T10:46:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T10:46:00Z",
+        "updated_at": "2026-09-10T10:46:00Z"
+      },
+      {
+        "model_result_id": "MR-1049-01-V1",
+        "study_id": "ST-1049-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1050-01-V1",
+        "study_id": "ST-1050-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-12T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left patellar fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-12T08:16:00Z",
+        "updated_at": "2026-09-12T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1052-01-V1",
+        "study_id": "ST-1052-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "superseded",
+        "is_current": false,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1052-01-V2",
+        "study_id": "ST-1052-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "2.0.0",
+        "inference_status": "pending",
+        "review_status": "unreviewed",
+        "generated_at": null,
+        "record_status": "active",
+        "is_current": true,
+        "summary": null,
+        "score_description": null,
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 2,
+        "created_at": "2026-09-10T08:45:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "model_result_id": "MR-1053-01-V1",
+        "study_id": "ST-1053-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "superseded",
+        "is_current": false,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1053-01-V2",
+        "study_id": "ST-1053-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "2.0.0",
+        "inference_status": "failed",
+        "review_status": "unreviewed",
+        "generated_at": null,
+        "record_status": "active",
+        "is_current": true,
+        "summary": null,
+        "score_description": null,
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 2,
+        "created_at": "2026-09-10T08:45:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "model_result_id": "MR-1054-01-V1",
+        "study_id": "ST-1054-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "superseded",
+        "is_current": false,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1054-01-V2",
+        "study_id": "ST-1054-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "2.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:45:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 2,
+        "created_at": "2026-09-10T08:45:00Z",
+        "updated_at": "2026-09-10T08:45:00Z"
+      },
+      {
+        "model_result_id": "MR-1055-01-V1",
+        "study_id": "ST-1055-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "superseded",
+        "is_current": false,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1056-01-V1",
+        "study_id": "ST-1056-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": null,
+        "score_description": null,
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1057-01-V1",
+        "study_id": "ST-1057-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": null,
+        "score_description": null,
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1058-01-V1",
+        "study_id": "ST-1058-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1059-01-V1",
+        "study_id": "ST-1059-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1060-01-V1",
+        "study_id": "ST-1060-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1061-01-V1",
+        "study_id": "ST-1061-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1062-01-V1",
+        "study_id": "ST-1062-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1063-01-V1",
+        "study_id": "ST-1063-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1064-01-V1",
+        "study_id": "ST-1064-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1065-01-V1",
+        "study_id": "ST-1065-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1066-01-V1",
+        "study_id": "ST-1066-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-08-05T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-08-05T08:16:00Z",
+        "updated_at": "2026-08-05T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1067-01-V1",
+        "study_id": "ST-1067-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1068-01-V1",
+        "study_id": "ST-1068-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1069-01-V1",
+        "study_id": "ST-1069-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1070-01-V1",
+        "study_id": "ST-1070-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1071-01-V1",
+        "study_id": "ST-1071-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      },
+      {
+        "model_result_id": "MR-1072-01-V1",
+        "study_id": "ST-1072-01",
+        "model_name": "synthetic-fixture-model",
+        "model_version": "1.0.0",
+        "inference_status": "completed",
+        "review_status": "unreviewed",
+        "generated_at": "2026-09-10T08:16:00Z",
+        "record_status": "active",
+        "is_current": true,
+        "summary": "Possible left distal radius fracture.",
+        "score_description": "Synthetic normalized score for presence of the named finding; not calibrated clinical probability.",
+        "limitations": [
+          "Fabricated software-test output. No imaging model was run."
+        ],
+        "record_version": 1,
+        "created_at": "2026-09-10T08:16:00Z",
+        "updated_at": "2026-09-10T08:16:00Z"
+      }
+    ],
+    "model_findings": [
+      {
+        "model_result_id": "MR-1042-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1042-01-V1",
+        "finding_index": 1,
+        "label": "dislocation",
+        "assessment": "not_detected",
+        "confidence": 0.04
+      },
+      {
+        "model_result_id": "MR-1043-01-V1",
+        "finding_index": 0,
+        "label": "patellar fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1045-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1045-02-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1045-03-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1045-04-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1045-05-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1045-06-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1045-07-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1045-08-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1045-09-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1045-10-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1045-11-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1045-12-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1045-13-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1045-14-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1045-15-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1046-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1046-02-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1049-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1050-01-V1",
+        "finding_index": 0,
+        "label": "patellar fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1052-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1053-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1054-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1054-01-V2",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.76
+      },
+      {
+        "model_result_id": "MR-1055-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1056-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": null
+      },
+      {
+        "model_result_id": "MR-1058-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1059-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1060-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1061-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1062-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1063-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1064-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1065-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1066-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1067-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1068-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1069-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1070-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1071-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      },
+      {
+        "model_result_id": "MR-1072-01-V1",
+        "finding_index": 0,
+        "label": "distal radius fracture",
+        "assessment": "suspected",
+        "confidence": 0.82
+      }
+    ],
+    "reviewed_reports": [
+      {
+        "report_id": "RR-1042-01-V1",
+        "study_id": "ST-1042-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius. No dislocation is seen.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": "Fracture-clinic review in two weeks.",
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1043-01-V1",
+        "study_id": "ST-1043-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the right patellar.",
+        "impression_text": "Nondisplaced right patellar fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1045-01-V1",
+        "study_id": "ST-1045-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-07-01T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-07-01T09:15:00Z",
+        "updated_at": "2026-07-01T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1045-02-V1",
+        "study_id": "ST-1045-02",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-07-06T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-07-06T09:15:00Z",
+        "updated_at": "2026-07-06T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1045-03-V1",
+        "study_id": "ST-1045-03",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-07-11T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-07-11T09:15:00Z",
+        "updated_at": "2026-07-11T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1045-04-V1",
+        "study_id": "ST-1045-04",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-07-16T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-07-16T09:15:00Z",
+        "updated_at": "2026-07-16T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1045-05-V1",
+        "study_id": "ST-1045-05",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-07-21T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-07-21T09:15:00Z",
+        "updated_at": "2026-07-21T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1045-06-V1",
+        "study_id": "ST-1045-06",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-07-26T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-07-26T09:15:00Z",
+        "updated_at": "2026-07-26T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1045-07-V1",
+        "study_id": "ST-1045-07",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-07-31T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-07-31T09:15:00Z",
+        "updated_at": "2026-07-31T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1045-08-V1",
+        "study_id": "ST-1045-08",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-08-05T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-08-05T09:15:00Z",
+        "updated_at": "2026-08-05T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1045-09-V1",
+        "study_id": "ST-1045-09",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-08-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-08-10T09:15:00Z",
+        "updated_at": "2026-08-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1045-10-V1",
+        "study_id": "ST-1045-10",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-08-15T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-08-15T09:15:00Z",
+        "updated_at": "2026-08-15T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1045-11-V1",
+        "study_id": "ST-1045-11",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-08-20T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-08-20T09:15:00Z",
+        "updated_at": "2026-08-20T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1045-12-V1",
+        "study_id": "ST-1045-12",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-08-25T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-08-25T09:15:00Z",
+        "updated_at": "2026-08-25T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1045-13-V1",
+        "study_id": "ST-1045-13",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-08-30T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-08-30T09:15:00Z",
+        "updated_at": "2026-08-30T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1045-14-V1",
+        "study_id": "ST-1045-14",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-04T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-04T09:15:00Z",
+        "updated_at": "2026-09-04T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1045-15-V1",
+        "study_id": "ST-1045-15",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-09T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-09T09:15:00Z",
+        "updated_at": "2026-09-09T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1046-01-V1",
+        "study_id": "ST-1046-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1046-02-V1",
+        "study_id": "ST-1046-02",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T11:45:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T11:45:00Z",
+        "updated_at": "2026-09-10T11:45:00Z"
+      },
+      {
+        "report_id": "RR-1049-01-V1",
+        "study_id": "ST-1049-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the distal radius.",
+        "impression_text": "Nondisplaced distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1050-01-V1",
+        "study_id": "ST-1050-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-12T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left patellar.",
+        "impression_text": "Nondisplaced left patellar fracture.",
+        "follow_up_recommendation": "Fracture-clinic review in two weeks.",
+        "supersedes_report_id": null,
+        "created_at": "2026-09-12T09:15:00Z",
+        "updated_at": "2026-09-12T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1051-01-V1",
+        "study_id": "ST-1051-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1052-01-V1",
+        "study_id": "ST-1052-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1053-01-V1",
+        "study_id": "ST-1053-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1054-01-V1",
+        "study_id": "ST-1054-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1055-01-V1",
+        "study_id": "ST-1055-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1056-01-V1",
+        "study_id": "ST-1056-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1057-01-V1",
+        "study_id": "ST-1057-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1059-01-V1",
+        "study_id": "ST-1059-01",
+        "record_version": 1,
+        "review_status": "draft",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": null,
+        "reviewed_at": null,
+        "findings_text": "Unreviewed synthetic draft text. Not available through get_reviewed_report.",
+        "impression_text": "",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1060-01-V1",
+        "study_id": "ST-1060-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "superseded",
+        "is_current": false,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1060-01-V2",
+        "study_id": "ST-1060-01",
+        "record_version": 2,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-02",
+        "reviewed_at": "2026-09-10T10:15:00Z",
+        "findings_text": "On clinician re-review, no acute fracture is identified.",
+        "impression_text": "No acute fracture identified on the reviewed study.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": "RR-1060-01-V1",
+        "created_at": "2026-09-10T10:15:00Z",
+        "updated_at": "2026-09-10T10:15:00Z"
+      },
+      {
+        "report_id": "RR-1061-01-V1",
+        "study_id": "ST-1061-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "superseded",
+        "is_current": false,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1062-01-V1",
+        "study_id": "ST-1062-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "withdrawn",
+        "is_current": false,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1063-01-V1",
+        "study_id": "ST-1063-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "No acute fracture or dislocation is identified.",
+        "impression_text": "No acute fracture identified.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1064-01-V1",
+        "study_id": "ST-1064-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "",
+        "impression_text": "",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1065-01-V1",
+        "study_id": "ST-1065-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": "Fracture-clinic review in two weeks.",
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1066-01-V1",
+        "study_id": "ST-1066-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-08-05T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-08-05T09:15:00Z",
+        "updated_at": "2026-08-05T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1067-01-V1",
+        "study_id": "ST-1067-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1068-01-V1",
+        "study_id": "ST-1068-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1069-01-V1",
+        "study_id": "ST-1069-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1070-01-V1",
+        "study_id": "ST-1070-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1071-01-V1",
+        "study_id": "ST-1071-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": "Fracture-clinic review in two weeks.",
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      },
+      {
+        "report_id": "RR-1072-01-V1",
+        "study_id": "ST-1072-01",
+        "record_version": 1,
+        "review_status": "reviewed",
+        "record_status": "active",
+        "is_current": true,
+        "reviewed_by_clinician_id": "SYN-CLIN-01",
+        "reviewed_at": "2026-09-10T09:15:00Z",
+        "findings_text": "Nondisplaced fracture of the left distal radius.",
+        "impression_text": "Nondisplaced left distal radius fracture.",
+        "follow_up_recommendation": null,
+        "supersedes_report_id": null,
+        "created_at": "2026-09-10T09:15:00Z",
+        "updated_at": "2026-09-10T09:15:00Z"
+      }
+    ],
+    "appointments": [
+      {
+        "appointment_id": "AP-1042-01",
+        "case_id": "1042",
+        "appointment_type": "fracture_follow_up",
+        "starts_at": "2026-09-24T10:30:00+05:30",
+        "ends_at": "2026-09-24T05:20:00Z",
+        "timezone": "Asia/Kolkata",
+        "status": "scheduled",
+        "clinician_id": "SYN-CLIN-02",
+        "location": "Synthetic Fracture Clinic, Room 2",
+        "notes": null,
+        "replaces_appointment_id": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T12:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "appointment_id": "AP-1043-01",
+        "case_id": "1043",
+        "appointment_type": "fracture_follow_up",
+        "starts_at": "2026-09-25T11:00:00+05:30",
+        "ends_at": "2026-09-25T05:50:00Z",
+        "timezone": "Asia/Kolkata",
+        "status": "confirmed",
+        "clinician_id": "SYN-CLIN-02",
+        "location": "Synthetic Fracture Clinic, Room 2",
+        "notes": null,
+        "replaces_appointment_id": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T12:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "appointment_id": "AP-1050-01",
+        "case_id": "1050",
+        "appointment_type": "fracture_follow_up",
+        "starts_at": "2026-09-26T09:00:00+05:30",
+        "ends_at": "2026-09-26T03:50:00Z",
+        "timezone": "Asia/Kolkata",
+        "status": "scheduled",
+        "clinician_id": "SYN-CLIN-02",
+        "location": "Synthetic Fracture Clinic, Room 2",
+        "notes": null,
+        "replaces_appointment_id": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T12:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "appointment_id": "AP-1065-01",
+        "case_id": "1065",
+        "appointment_type": "fracture_follow_up",
+        "starts_at": "2026-09-21T10:00:00+05:30",
+        "ends_at": "2026-09-21T04:50:00Z",
+        "timezone": "Asia/Kolkata",
+        "status": "confirmed",
+        "clinician_id": "SYN-CLIN-02",
+        "location": "Synthetic Fracture Clinic, Room 2",
+        "notes": null,
+        "replaces_appointment_id": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T12:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "appointment_id": "AP-1065-02",
+        "case_id": "1065",
+        "appointment_type": "fracture_follow_up",
+        "starts_at": "2026-10-05T10:00:00+05:30",
+        "ends_at": "2026-10-05T04:50:00Z",
+        "timezone": "Asia/Kolkata",
+        "status": "scheduled",
+        "clinician_id": "SYN-CLIN-02",
+        "location": "Synthetic Fracture Clinic, Room 2",
+        "notes": null,
+        "replaces_appointment_id": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T12:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "appointment_id": "AP-1066-01",
+        "case_id": "1066",
+        "appointment_type": "fracture_follow_up",
+        "starts_at": "2026-08-12T10:00:00+05:30",
+        "ends_at": "2026-08-12T04:50:00Z",
+        "timezone": "Asia/Kolkata",
+        "status": "completed",
+        "clinician_id": "SYN-CLIN-02",
+        "location": "Synthetic Fracture Clinic, Room 2",
+        "notes": null,
+        "replaces_appointment_id": null,
+        "record_version": 1,
+        "created_at": "2026-08-05T12:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "appointment_id": "AP-1066-02",
+        "case_id": "1066",
+        "appointment_type": "fracture_follow_up",
+        "starts_at": "2026-08-19T10:00:00+05:30",
+        "ends_at": "2026-08-19T04:50:00Z",
+        "timezone": "Asia/Kolkata",
+        "status": "no_show",
+        "clinician_id": "SYN-CLIN-02",
+        "location": "Synthetic Fracture Clinic, Room 2",
+        "notes": null,
+        "replaces_appointment_id": null,
+        "record_version": 1,
+        "created_at": "2026-08-05T12:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "appointment_id": "AP-1067-01",
+        "case_id": "1067",
+        "appointment_type": "fracture_follow_up",
+        "starts_at": "2026-09-23T10:00:00+05:30",
+        "ends_at": "2026-09-23T04:50:00Z",
+        "timezone": "Asia/Kolkata",
+        "status": "cancelled",
+        "clinician_id": "SYN-CLIN-02",
+        "location": "Synthetic Fracture Clinic, Room 2",
+        "notes": "Cancelled booking; no replacement is recorded.",
+        "replaces_appointment_id": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T12:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "appointment_id": "AP-1068-01",
+        "case_id": "1068",
+        "appointment_type": "fracture_follow_up",
+        "starts_at": "2026-09-24T10:00:00+05:30",
+        "ends_at": "2026-09-24T04:50:00Z",
+        "timezone": "Asia/Kolkata",
+        "status": "cancelled",
+        "clinician_id": "SYN-CLIN-02",
+        "location": "Synthetic Fracture Clinic, Room 2",
+        "notes": "Replaced by AP-1068-02.",
+        "replaces_appointment_id": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T12:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "appointment_id": "AP-1068-02",
+        "case_id": "1068",
+        "appointment_type": "fracture_follow_up",
+        "starts_at": "2026-09-28T10:00:00+05:30",
+        "ends_at": "2026-09-28T04:50:00Z",
+        "timezone": "Asia/Kolkata",
+        "status": "confirmed",
+        "clinician_id": "SYN-CLIN-02",
+        "location": "Synthetic Fracture Clinic, Room 2",
+        "notes": null,
+        "replaces_appointment_id": "AP-1068-01",
+        "record_version": 1,
+        "created_at": "2026-09-10T12:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "appointment_id": "AP-1069-01",
+        "case_id": "1069",
+        "appointment_type": "fracture_follow_up",
+        "starts_at": "2026-09-25T10:00:00+05:30",
+        "ends_at": "2026-09-25T04:50:00Z",
+        "timezone": "Asia/Kolkata",
+        "status": "scheduled",
+        "clinician_id": "SYN-CLIN-02",
+        "location": "Synthetic Clinic, East Wing",
+        "notes": null,
+        "replaces_appointment_id": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T12:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "appointment_id": "AP-1069-02",
+        "case_id": "1069",
+        "appointment_type": "fracture_follow_up",
+        "starts_at": "2026-09-25T10:00:00+05:30",
+        "ends_at": "2026-09-25T04:50:00Z",
+        "timezone": "Asia/Kolkata",
+        "status": "scheduled",
+        "clinician_id": "SYN-CLIN-03",
+        "location": "Synthetic Clinic, West Wing",
+        "notes": "Deliberately overlapping active booking for conflict handling.",
+        "replaces_appointment_id": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T12:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "appointment_id": "AP-1070-01",
+        "case_id": "1070",
+        "appointment_type": "fracture_follow_up",
+        "starts_at": "2026-09-26T10:00:00+05:30",
+        "ends_at": null,
+        "timezone": "Asia/Kolkata",
+        "status": "scheduled",
+        "clinician_id": null,
+        "location": null,
+        "notes": null,
+        "replaces_appointment_id": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T12:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      },
+      {
+        "appointment_id": "AP-1072-01",
+        "case_id": "1072",
+        "appointment_type": "imaging",
+        "starts_at": "2026-09-26T12:00:00+05:30",
+        "ends_at": "2026-09-26T06:50:00Z",
+        "timezone": "Asia/Kolkata",
+        "status": "scheduled",
+        "clinician_id": null,
+        "location": "Synthetic Imaging Department",
+        "notes": null,
+        "replaces_appointment_id": null,
+        "record_version": 1,
+        "created_at": "2026-09-10T12:00:00Z",
+        "updated_at": "2026-09-17T09:00:00Z"
+      }
+    ],
+    "retrieval_indexes": [],
+    "chunk_embeddings": []
+  }
+}

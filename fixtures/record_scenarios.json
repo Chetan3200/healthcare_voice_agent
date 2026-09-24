@@ -1,0 +1,1175 @@
+{
+  "dataset_version": "synthetic-clinic-v1",
+  "reference_time": "2026-09-17T09:00:00Z",
+  "notice": "Database fixture coverage and expected future tool behavior, not an executed voice/ASR evaluation suite.",
+  "scenarios": [
+    {
+      "id": "REC01",
+      "description": "Normal case: one study, reviewed report, and booked follow-up",
+      "record_refs": [
+        "1042",
+        "ST-1042-01",
+        "RR-1042-01-V1",
+        "AP-1042-01"
+      ],
+      "expected_behavior": "Use reviewed report RR-1042-01-V1 and appointment AP-1042-01, not model predictions.",
+      "checks": [
+        {
+          "table": "studies",
+          "where": {
+            "case_id": "1042"
+          },
+          "count": 1
+        },
+        {
+          "table": "reviewed_reports",
+          "where": {
+            "study_id": "ST-1042-01",
+            "is_current": true,
+            "review_status": "reviewed"
+          },
+          "count": 1
+        },
+        {
+          "table": "appointments",
+          "where": {
+            "case_id": "1042",
+            "appointment_type": "fracture_follow_up",
+            "status": {
+              "in": [
+                "scheduled",
+                "confirmed"
+              ]
+            },
+            "starts_at": {
+              "gte": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "REC02",
+      "description": "Unknown case identifier",
+      "record_refs": [
+        "9999"
+      ],
+      "expected_behavior": "Return CASE_NOT_FOUND; do not substitute a similar case.",
+      "checks": [
+        {
+          "table": "cases",
+          "where": {
+            "case_id": "9999"
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC03",
+      "description": "Two patients have the exact same name",
+      "record_refs": [
+        "SYN-P001",
+        "SYN-P002"
+      ],
+      "expected_behavior": "Clarify identity using minimal distinguishing information before any clinical lookup.",
+      "checks": [
+        {
+          "table": "patients",
+          "where": {
+            "display_name": "Arjun Sharma"
+          },
+          "count": 2
+        }
+      ]
+    },
+    {
+      "id": "REC04",
+      "description": "Similar but different patient names",
+      "record_refs": [
+        "SYN-P001",
+        "SYN-P002",
+        "SYN-P003"
+      ],
+      "expected_behavior": "Do not silently treat Arun Sharma as Arjun Sharma.",
+      "checks": [
+        {
+          "table": "patients",
+          "where": {
+            "display_name": "Arun Sharma"
+          },
+          "count": 1
+        },
+        {
+          "table": "patients",
+          "where": {
+            "display_name": "Arjun Sharma"
+          },
+          "count": 2
+        }
+      ]
+    },
+    {
+      "id": "REC05",
+      "description": "Similar case IDs refer to different patients and body parts",
+      "record_refs": [
+        "1042",
+        "1043"
+      ],
+      "expected_behavior": "Case 1042 is not case 1043; preserve exact confirmed ID.",
+      "checks": [
+        {
+          "table": "cases",
+          "where": {
+            "case_id": "1042",
+            "patient_id": "SYN-P001"
+          },
+          "count": 1
+        },
+        {
+          "table": "cases",
+          "where": {
+            "case_id": "1043",
+            "patient_id": "SYN-P002"
+          },
+          "count": 1
+        },
+        {
+          "table": "studies",
+          "where": {
+            "case_id": "1042",
+            "body_part": "wrist"
+          },
+          "count": 1
+        },
+        {
+          "table": "studies",
+          "where": {
+            "case_id": "1043",
+            "body_part": "knee"
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "REC06",
+      "description": "One patient has different injury episodes",
+      "record_refs": [
+        "SYN-P001",
+        "1042",
+        "1050"
+      ],
+      "expected_behavior": "Identifying the patient does not select a case; clarify the requested episode.",
+      "checks": [
+        {
+          "table": "cases",
+          "where": {
+            "patient_id": "SYN-P001",
+            "case_id": {
+              "in": [
+                "1042",
+                "1050"
+              ]
+            }
+          },
+          "count": 2
+        }
+      ]
+    },
+    {
+      "id": "REC07",
+      "description": "A real study ID belongs to another case",
+      "record_refs": [
+        "1042",
+        "ST-1043-01"
+      ],
+      "expected_behavior": "Return RECORD_NOT_FOUND for that case/study pair; do not disclose the other case.",
+      "checks": [
+        {
+          "table": "studies",
+          "where": {
+            "study_id": "ST-1043-01"
+          },
+          "count": 1
+        },
+        {
+          "table": "studies",
+          "where": {
+            "study_id": "ST-1043-01",
+            "case_id": "1042"
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC08",
+      "description": "A real model result ID belongs to another study",
+      "record_refs": [
+        "ST-1042-01",
+        "MR-1043-01-V1"
+      ],
+      "expected_behavior": "Return RECORD_NOT_FOUND for the requested study/result pair.",
+      "checks": [
+        {
+          "table": "model_results",
+          "where": {
+            "model_result_id": "MR-1043-01-V1"
+          },
+          "count": 1
+        },
+        {
+          "table": "model_results",
+          "where": {
+            "model_result_id": "MR-1043-01-V1",
+            "study_id": "ST-1042-01"
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC09",
+      "description": "A real reviewed report ID belongs to another study",
+      "record_refs": [
+        "ST-1042-01",
+        "RR-1043-01-V1"
+      ],
+      "expected_behavior": "Return RECORD_NOT_FOUND for the requested study/report pair.",
+      "checks": [
+        {
+          "table": "reviewed_reports",
+          "where": {
+            "report_id": "RR-1043-01-V1"
+          },
+          "count": 1
+        },
+        {
+          "table": "reviewed_reports",
+          "where": {
+            "report_id": "RR-1043-01-V1",
+            "study_id": "ST-1042-01"
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC10",
+      "description": "Both active clinician and active staff users can read every seeded case",
+      "record_refs": [
+        "SYN-USER-CLIN",
+        "SYN-USER-STAFF"
+      ],
+      "expected_behavior": "Use trusted session identity; no per-case grants are required in this mock app.",
+      "checks": [
+        {
+          "table": "authorized_cases",
+          "where": {
+            "user_id": "SYN-USER-CLIN",
+            "case_id": {
+              "in": [
+                "1042",
+                "1043",
+                "1044",
+                "1045",
+                "1046",
+                "1047",
+                "1048",
+                "1049",
+                "1050",
+                "1051",
+                "1052",
+                "1053",
+                "1054",
+                "1055",
+                "1056",
+                "1057",
+                "1058",
+                "1059",
+                "1060",
+                "1061",
+                "1062",
+                "1063",
+                "1064",
+                "1065",
+                "1066",
+                "1067",
+                "1068",
+                "1069",
+                "1070",
+                "1071",
+                "1072"
+              ]
+            }
+          },
+          "count": 31
+        },
+        {
+          "table": "authorized_cases",
+          "where": {
+            "user_id": "SYN-USER-STAFF",
+            "case_id": {
+              "in": [
+                "1042",
+                "1043",
+                "1044",
+                "1045",
+                "1046",
+                "1047",
+                "1048",
+                "1049",
+                "1050",
+                "1051",
+                "1052",
+                "1053",
+                "1054",
+                "1055",
+                "1056",
+                "1057",
+                "1058",
+                "1059",
+                "1060",
+                "1061",
+                "1062",
+                "1063",
+                "1064",
+                "1065",
+                "1066",
+                "1067",
+                "1068",
+                "1069",
+                "1070",
+                "1071",
+                "1072"
+              ]
+            }
+          },
+          "count": 31
+        }
+      ]
+    },
+    {
+      "id": "REC11",
+      "description": "Inactive or unknown app users have no allowed cases",
+      "record_refs": [
+        "SYN-USER-INACTIVE"
+      ],
+      "expected_behavior": "Reject the session before clinical disclosure.",
+      "checks": [
+        {
+          "table": "authorized_cases",
+          "where": {
+            "user_id": "SYN-USER-INACTIVE"
+          },
+          "count": 0
+        },
+        {
+          "table": "authorized_cases",
+          "where": {
+            "user_id": "SYN-USER-UNKNOWN"
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC12",
+      "description": "Case has no imaging studies",
+      "record_refs": [
+        "1044"
+      ],
+      "expected_behavior": "get_study returns RECORD_NOT_FOUND.",
+      "checks": [
+        {
+          "table": "studies",
+          "where": {
+            "case_id": "1044"
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC13",
+      "description": "Case has fifteen imaging studies",
+      "record_refs": [
+        "1045"
+      ],
+      "expected_behavior": "Return all candidate identifiers; ask a short narrowing question rather than reading all fifteen aloud.",
+      "checks": [
+        {
+          "table": "studies",
+          "where": {
+            "case_id": "1045"
+          },
+          "count": 15
+        }
+      ]
+    },
+    {
+      "id": "REC14",
+      "description": "Two same-day wrist X-rays need more than a date to distinguish them",
+      "record_refs": [
+        "ST-1046-01",
+        "ST-1046-02"
+      ],
+      "expected_behavior": "Clarify using examination time; do not arbitrarily select one.",
+      "checks": [
+        {
+          "table": "studies",
+          "where": {
+            "case_id": "1046",
+            "body_part": "wrist"
+          },
+          "count": 2
+        },
+        {
+          "table": "studies",
+          "where": {
+            "study_id": "ST-1046-01",
+            "performed_at": "2026-09-10T08:15:00Z"
+          },
+          "count": 1
+        },
+        {
+          "table": "studies",
+          "where": {
+            "study_id": "ST-1046-02",
+            "performed_at": "2026-09-10T10:45:00Z"
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "REC15",
+      "description": "Study is scheduled but has not been performed",
+      "record_refs": [
+        "1047"
+      ],
+      "expected_behavior": "Report its scheduled status; do not invent examination results.",
+      "checks": [
+        {
+          "table": "studies",
+          "where": {
+            "case_id": "1047",
+            "acquisition_status": "scheduled",
+            "performed_at": null
+          },
+          "count": 1
+        },
+        {
+          "table": "model_results",
+          "where": {
+            "study_id": "ST-1047-01"
+          },
+          "count": 0
+        },
+        {
+          "table": "reviewed_reports",
+          "where": {
+            "study_id": "ST-1047-01"
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC16",
+      "description": "Study was cancelled",
+      "record_refs": [
+        "1048"
+      ],
+      "expected_behavior": "Report cancellation; no model result or report is available.",
+      "checks": [
+        {
+          "table": "studies",
+          "where": {
+            "case_id": "1048",
+            "acquisition_status": "cancelled",
+            "performed_at": null
+          },
+          "count": 1
+        },
+        {
+          "table": "model_results",
+          "where": {
+            "study_id": "ST-1048-01"
+          },
+          "count": 0
+        },
+        {
+          "table": "reviewed_reports",
+          "where": {
+            "study_id": "ST-1048-01"
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC17",
+      "description": "Completed study has missing optional details",
+      "record_refs": [
+        "ST-1049-01"
+      ],
+      "expected_behavior": "Preserve missing date/image and unknown side; do not infer values.",
+      "checks": [
+        {
+          "table": "studies",
+          "where": {
+            "case_id": "1049",
+            "performed_at": null,
+            "laterality": "unknown",
+            "image_ref": null
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "REC18",
+      "description": "No model result is stored",
+      "record_refs": [
+        "1051"
+      ],
+      "expected_behavior": "Return RESULT_NOT_AVAILABLE without fabricating a prediction.",
+      "checks": [
+        {
+          "table": "model_results",
+          "where": {
+            "study_id": "ST-1051-01"
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC19",
+      "description": "Current prediction is pending; older completed output exists",
+      "record_refs": [
+        "1052"
+      ],
+      "expected_behavior": "Return RESULT_NOT_AVAILABLE by default; never silently fall back to the older result.",
+      "checks": [
+        {
+          "table": "model_results",
+          "where": {
+            "study_id": "ST-1052-01",
+            "is_current": true,
+            "inference_status": "pending"
+          },
+          "count": 1
+        },
+        {
+          "table": "model_results",
+          "where": {
+            "study_id": "ST-1052-01",
+            "is_current": false,
+            "inference_status": "completed"
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "REC20",
+      "description": "Current prediction failed; older completed output exists",
+      "record_refs": [
+        "1053"
+      ],
+      "expected_behavior": "Return RESULT_NOT_AVAILABLE; historical output only by explicit request.",
+      "checks": [
+        {
+          "table": "model_results",
+          "where": {
+            "study_id": "ST-1053-01",
+            "is_current": true,
+            "inference_status": "failed"
+          },
+          "count": 1
+        },
+        {
+          "table": "model_results",
+          "where": {
+            "study_id": "ST-1053-01",
+            "is_current": false,
+            "inference_status": "completed"
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "REC21",
+      "description": "Several completed model versions exist",
+      "record_refs": [
+        "MR-1054-01-V1",
+        "MR-1054-01-V2"
+      ],
+      "expected_behavior": "Use the designated current version, not the highest confidence score. Label explicitly requested old output historical.",
+      "checks": [
+        {
+          "table": "model_results",
+          "where": {
+            "study_id": "ST-1054-01",
+            "is_current": true,
+            "model_version": "2.0.0"
+          },
+          "count": 1
+        },
+        {
+          "table": "model_results",
+          "where": {
+            "study_id": "ST-1054-01",
+            "record_status": "superseded"
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "REC22",
+      "description": "Only a historical prediction exists",
+      "record_refs": [
+        "MR-1055-01-V1"
+      ],
+      "expected_behavior": "Default request returns RESULT_NOT_AVAILABLE; explicit historical ID may be returned with a warning.",
+      "checks": [
+        {
+          "table": "model_results",
+          "where": {
+            "study_id": "ST-1055-01"
+          },
+          "count": 1
+        },
+        {
+          "table": "model_results",
+          "where": {
+            "study_id": "ST-1055-01",
+            "is_current": true
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC23",
+      "description": "Prediction confidence and summary are absent",
+      "record_refs": [
+        "MR-1056-01-V1"
+      ],
+      "expected_behavior": "Return stored finding with null score; do not create a confidence or summary.",
+      "checks": [
+        {
+          "table": "model_findings",
+          "where": {
+            "model_result_id": "MR-1056-01-V1",
+            "confidence": null
+          },
+          "count": 1
+        },
+        {
+          "table": "model_results",
+          "where": {
+            "model_result_id": "MR-1056-01-V1",
+            "summary": null,
+            "score_description": null
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "REC24",
+      "description": "Completed prediction contains no findings or summary",
+      "record_refs": [
+        "MR-1057-01-V1"
+      ],
+      "expected_behavior": "Say the stored result contains no answer; do not interpret an empty list as no fracture.",
+      "checks": [
+        {
+          "table": "model_results",
+          "where": {
+            "model_result_id": "MR-1057-01-V1",
+            "inference_status": "completed",
+            "summary": null
+          },
+          "count": 1
+        },
+        {
+          "table": "model_findings",
+          "where": {
+            "model_result_id": "MR-1057-01-V1"
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC25",
+      "description": "Reviewed report is absent but a model prediction exists",
+      "record_refs": [
+        "1058"
+      ],
+      "expected_behavior": "Return RECORD_NOT_FOUND for the report; never substitute the prediction.",
+      "checks": [
+        {
+          "table": "reviewed_reports",
+          "where": {
+            "study_id": "ST-1058-01"
+          },
+          "count": 0
+        },
+        {
+          "table": "model_results",
+          "where": {
+            "study_id": "ST-1058-01",
+            "is_current": true
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "REC26",
+      "description": "Only an unreviewed report draft exists",
+      "record_refs": [
+        "RR-1059-01-V1"
+      ],
+      "expected_behavior": "Return NOT_REVIEWED without disclosing draft findings as reviewed evidence.",
+      "checks": [
+        {
+          "table": "reviewed_reports",
+          "where": {
+            "study_id": "ST-1059-01",
+            "review_status": "draft",
+            "is_current": true
+          },
+          "count": 1
+        },
+        {
+          "table": "reviewed_reports",
+          "where": {
+            "study_id": "ST-1059-01",
+            "review_status": "reviewed"
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC27",
+      "description": "Current reviewed report corrects an older reviewed conclusion",
+      "record_refs": [
+        "RR-1060-01-V1",
+        "RR-1060-01-V2"
+      ],
+      "expected_behavior": "Use version 2 by default; label version 1 historical when explicitly requested.",
+      "checks": [
+        {
+          "table": "reviewed_reports",
+          "where": {
+            "study_id": "ST-1060-01"
+          },
+          "count": 2
+        },
+        {
+          "table": "reviewed_reports",
+          "where": {
+            "report_id": "RR-1060-01-V2",
+            "is_current": true,
+            "supersedes_report_id": "RR-1060-01-V1",
+            "impression_text": "No acute fracture identified on the reviewed study."
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "REC28",
+      "description": "Only a superseded reviewed report exists",
+      "record_refs": [
+        "1061"
+      ],
+      "expected_behavior": "No eligible current report; do not silently use the historical version.",
+      "checks": [
+        {
+          "table": "reviewed_reports",
+          "where": {
+            "study_id": "ST-1061-01",
+            "record_status": "superseded"
+          },
+          "count": 1
+        },
+        {
+          "table": "reviewed_reports",
+          "where": {
+            "study_id": "ST-1061-01",
+            "is_current": true
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC29",
+      "description": "Only a withdrawn reviewed report exists",
+      "record_refs": [
+        "RR-1062-01-V1"
+      ],
+      "expected_behavior": "Do not return the withdrawn report, including by explicit ID.",
+      "checks": [
+        {
+          "table": "reviewed_reports",
+          "where": {
+            "study_id": "ST-1062-01",
+            "record_status": "withdrawn"
+          },
+          "count": 1
+        },
+        {
+          "table": "reviewed_reports",
+          "where": {
+            "study_id": "ST-1062-01",
+            "is_current": true
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC30",
+      "description": "Model predicts a fracture, reviewed report says no acute fracture",
+      "record_refs": [
+        "MR-1063-01-V1",
+        "RR-1063-01-V1"
+      ],
+      "expected_behavior": "Keep the two sources distinct; reviewed-report questions use reviewed evidence.",
+      "checks": [
+        {
+          "table": "model_findings",
+          "where": {
+            "model_result_id": "MR-1063-01-V1",
+            "assessment": "suspected"
+          },
+          "count": 1
+        },
+        {
+          "table": "reviewed_reports",
+          "where": {
+            "report_id": "RR-1063-01-V1",
+            "impression_text": "No acute fracture identified."
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "REC31",
+      "description": "Reviewed report has empty findings/impression sections",
+      "record_refs": [
+        "RR-1064-01-V1"
+      ],
+      "expected_behavior": "State that available reviewed text cannot answer; do not fill gaps from model output.",
+      "checks": [
+        {
+          "table": "reviewed_reports",
+          "where": {
+            "report_id": "RR-1064-01-V1",
+            "findings_text": "",
+            "impression_text": "",
+            "follow_up_recommendation": null
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "REC32",
+      "description": "Case has no appointments",
+      "record_refs": [
+        "1044"
+      ],
+      "expected_behavior": "Return successful appointments=[] rather than inventing a booking.",
+      "checks": [
+        {
+          "table": "appointments",
+          "where": {
+            "case_id": "1044"
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC33",
+      "description": "Only past appointments exist",
+      "record_refs": [
+        "1066"
+      ],
+      "expected_behavior": "Upcoming filter returns an empty list; keep completed/no_show status in history.",
+      "checks": [
+        {
+          "table": "appointments",
+          "where": {
+            "case_id": "1066",
+            "starts_at": {
+              "lt": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 2
+        },
+        {
+          "table": "appointments",
+          "where": {
+            "case_id": "1066",
+            "appointment_type": "fracture_follow_up",
+            "status": {
+              "in": [
+                "scheduled",
+                "confirmed"
+              ]
+            },
+            "starts_at": {
+              "gte": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC34",
+      "description": "Only a cancelled future follow-up exists",
+      "record_refs": [
+        "AP-1067-01"
+      ],
+      "expected_behavior": "Do not describe a cancelled record as a booked follow-up.",
+      "checks": [
+        {
+          "table": "appointments",
+          "where": {
+            "case_id": "1067",
+            "status": "cancelled",
+            "starts_at": {
+              "gte": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 1
+        },
+        {
+          "table": "appointments",
+          "where": {
+            "case_id": "1067",
+            "appointment_type": "fracture_follow_up",
+            "status": {
+              "in": [
+                "scheduled",
+                "confirmed"
+              ]
+            },
+            "starts_at": {
+              "gte": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC35",
+      "description": "Cancelled original and active replacement both exist",
+      "record_refs": [
+        "AP-1068-01",
+        "AP-1068-02"
+      ],
+      "expected_behavior": "Return the replacement when asked for the booked visit; preserve the old cancellation.",
+      "checks": [
+        {
+          "table": "appointments",
+          "where": {
+            "appointment_id": "AP-1068-01",
+            "status": "cancelled"
+          },
+          "count": 1
+        },
+        {
+          "table": "appointments",
+          "where": {
+            "appointment_id": "AP-1068-02",
+            "status": "confirmed",
+            "replaces_appointment_id": "AP-1068-01"
+          },
+          "count": 1
+        },
+        {
+          "table": "appointments",
+          "where": {
+            "case_id": "1068",
+            "appointment_type": "fracture_follow_up",
+            "status": {
+              "in": [
+                "scheduled",
+                "confirmed"
+              ]
+            },
+            "starts_at": {
+              "gte": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "REC36",
+      "description": "Two upcoming active follow-ups exist",
+      "record_refs": [
+        "AP-1065-01",
+        "AP-1065-02"
+      ],
+      "expected_behavior": "For next follow-up use the earliest start; return both if asked for all.",
+      "checks": [
+        {
+          "table": "appointments",
+          "where": {
+            "case_id": "1065",
+            "appointment_type": "fracture_follow_up",
+            "status": {
+              "in": [
+                "scheduled",
+                "confirmed"
+              ]
+            },
+            "starts_at": {
+              "gte": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 2
+        }
+      ]
+    },
+    {
+      "id": "REC37",
+      "description": "Two active follow-ups overlap at different locations",
+      "record_refs": [
+        "AP-1069-01",
+        "AP-1069-02"
+      ],
+      "expected_behavior": "Surface both recorded bookings and their conflict; do not choose or cancel one.",
+      "checks": [
+        {
+          "table": "appointments",
+          "where": {
+            "case_id": "1069",
+            "starts_at": "2026-09-25T10:00:00+05:30",
+            "status": "scheduled"
+          },
+          "count": 2
+        },
+        {
+          "table": "appointments",
+          "where": {
+            "appointment_id": "AP-1069-01",
+            "location": "Synthetic Clinic, East Wing"
+          },
+          "count": 1
+        },
+        {
+          "table": "appointments",
+          "where": {
+            "appointment_id": "AP-1069-02",
+            "location": "Synthetic Clinic, West Wing"
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "REC38",
+      "description": "Booked appointment has missing optional details",
+      "record_refs": [
+        "AP-1070-01"
+      ],
+      "expected_behavior": "Return the known booking time/status; state location/clinician/end time are not recorded.",
+      "checks": [
+        {
+          "table": "appointments",
+          "where": {
+            "case_id": "1070",
+            "ends_at": null,
+            "clinician_id": null,
+            "location": null,
+            "notes": null
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "REC39",
+      "description": "Reviewed report recommends follow-up but no booking exists",
+      "record_refs": [
+        "RR-1071-01-V1"
+      ],
+      "expected_behavior": "Distinguish a recommendation from a booked appointment.",
+      "checks": [
+        {
+          "table": "reviewed_reports",
+          "where": {
+            "report_id": "RR-1071-01-V1",
+            "follow_up_recommendation": "Fracture-clinic review in two weeks."
+          },
+          "count": 1
+        },
+        {
+          "table": "appointments",
+          "where": {
+            "case_id": "1071"
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "REC40",
+      "description": "An imaging appointment exists but no fracture follow-up is booked",
+      "record_refs": [
+        "AP-1072-01"
+      ],
+      "expected_behavior": "Do not relabel an imaging appointment as a fracture-clinic follow-up.",
+      "checks": [
+        {
+          "table": "appointments",
+          "where": {
+            "case_id": "1072",
+            "appointment_type": "imaging",
+            "status": "scheduled"
+          },
+          "count": 1
+        },
+        {
+          "table": "appointments",
+          "where": {
+            "case_id": "1072",
+            "appointment_type": "fracture_follow_up",
+            "status": {
+              "in": [
+                "scheduled",
+                "confirmed"
+              ]
+            },
+            "starts_at": {
+              "gte": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 0
+        }
+      ]
+    }
+  ]
+}

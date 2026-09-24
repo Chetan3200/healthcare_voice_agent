@@ -1,0 +1,34 @@
+{
+  "dataset_version": "synthetic-clinic-v1",
+  "reference_time": "2026-09-17T09:00:00Z",
+  "schema_revision": "001",
+  "notice": "Frozen synthetic records for database and tool development. The 50 record/document coverage scenarios are not a completed voice evaluation suite. Embeddings and model inference were not run.",
+  "files": {
+    "clinical_records.json": "21d42daf17a4f2d8abdf0add3fd224a38684d1c9c6f12802c4aa663b3ff695fb",
+    "clinic_documents.json": "57116613c8ca45810bbc61e4d363dafd7a72254f7f827c8c6c63e92e2b08f268",
+    "record_scenarios.json": "b0b71170885ea40fad77ba2f1bcea98f4869c4d82f07cc38476f97bba88d2906",
+    "document_scenarios.json": "4ad8596541f0c38b1cdcaebf101795de1886840e28f904beca184347563689f4",
+    "invalid_records.json": "3d61af8085e07a90fe902f6473b3c75cc061d1849c84d4ee142bfc8690aa1464"
+  },
+  "table_counts": {
+    "patients": 12,
+    "clinicians": 3,
+    "app_users": 3,
+    "cases": 31,
+    "studies": 45,
+    "model_results": 45,
+    "model_findings": 43,
+    "reviewed_reports": 43,
+    "appointments": 14,
+    "retrieval_indexes": 0,
+    "chunk_embeddings": 0,
+    "clinic_documents": 9,
+    "document_versions": 10,
+    "document_chunks": 30
+  },
+  "scenario_counts": {
+    "record_scenarios": 40,
+    "document_scenarios": 10,
+    "invalid_records": 20
+  }
+}

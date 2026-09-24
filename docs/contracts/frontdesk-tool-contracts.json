@@ -1,0 +1,1994 @@
+{
+  "contract_version": "1.0.0",
+  "schema_dialect": "JSON Schema 2020-12",
+  "conventions": {
+    "required_fields": "All argument fields are required; nullable restrictions must be supplied as null. Unknown fields are rejected.",
+    "time": "Search dates use YYYY-MM-DD and daily start-time bounds HH:MM in the server-configured clinic IANA timezone. Both bounds are inclusive; overnight windows require separate searches. At most 31 inclusive days. Appointment timestamps carry that zone's actual offset, including DST changes.",
+    "identity": "Only availability search omits case_id. All other tools require the confirmed server case, session/clinic authorization and current context version. The LLM cannot set session, identity, confirmation or authorization fields. Nonexistent and cross-case child IDs must not reveal cross-case existence.",
+    "ids": "IDs come from tool results or resolved context. slot_id, draft_id and booking_request_id are opaque UUIDs. booking_request_id persists across invocations; meta.request_id uniquely identifies one invocation and must not be used as an idempotency key.",
+    "holds": "Preparation is not booking. Holds initially last at most two minutes and cannot outlast appointment start. At exact expiry the hold is expired. Same active selection retries do not extend expiry. A selection change supersedes the old draft and releases its hold.",
+    "confirmation": "The controller records completed readback and explicit user confirmation of the exact current draft. No confirmed argument exists. A later user correction/context revision invalidates confirmation before booking. The backend must validate persisted confirmation under the booking transaction.",
+    "atomicity": "A successful transaction stores the appointment, exclusive allocation and successful booking request outcome together. A retry for an already committed draft returns the original appointment, even after hold expiry.",
+    "recovery": "Get status never mutates the booking or retries it. pending is not failure; booked requires appointment details; expired and failed contain no appointment. A successful lookup envelope is distinct from a successful booking.",
+    "validation_boundary": "Pydantic enforces shapes and local temporal constraints only. Backend checks authorization, offered-slot membership, clinic configuration, availability, ownership, expiry, confirmation and idempotency. Output fields/validators exceed some provider tool-schema subsets; adapt provider inputs without dropping backend validation."
+  },
+  "tools": [
+    {
+      "name": "find_available_slots",
+      "description": "Find at most max_results available slots in the configured clinic timezone, earliest first. Date bounds and daily appointment START-time bounds are inclusive; null restrictions mean any. At most 31 inclusive calendar days per search. Duration, hours and clinician eligibility are backend-owned. Needs permitted clinic/conversation context, not a confirmed patient. Empty slots is success. Does not reserve a slot; availability may change before preparation. Records session offer receipts so preparation can reject invented or unoffered slot IDs; this metadata write is why read_only is false.",
+      "read_only": false,
+      "input_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "appointment_type": {
+            "enum": [
+              "initial_consultation",
+              "fracture_follow_up",
+              "imaging",
+              "physiotherapy",
+              "other"
+            ],
+            "title": "Appointment Type",
+            "type": "string"
+          },
+          "start_date": {
+            "description": "Clinic-local YYYY-MM-DD, inclusive.",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "title": "Start Date",
+            "type": "string"
+          },
+          "end_date": {
+            "description": "Inclusive; at most 31 calendar days including start_date.",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "title": "End Date",
+            "type": "string"
+          },
+          "earliest_start_time": {
+            "anyOf": [
+              {
+                "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Inclusive HH:MM start-time restriction on EACH day; null means unrestricted.",
+            "title": "Earliest Start Time"
+          },
+          "latest_start_time": {
+            "anyOf": [
+              {
+                "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Inclusive HH:MM start-time restriction on EACH day; null means unrestricted. Overnight windows are not accepted.",
+            "title": "Latest Start Time"
+          },
+          "clinician_id": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Exact known clinician ID, or null for any eligible clinician.",
+            "title": "Clinician Id"
+          },
+          "max_results": {
+            "maximum": 100,
+            "minimum": 1,
+            "title": "Max Results",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "appointment_type",
+          "start_date",
+          "end_date",
+          "earliest_start_time",
+          "latest_start_time",
+          "clinician_id",
+          "max_results"
+        ],
+        "title": "FindAvailableSlotsArgs",
+        "type": "object"
+      },
+      "output_schema": {
+        "$defs": {
+          "AvailableSlot": {
+            "additionalProperties": false,
+            "properties": {
+              "slot_id": {
+                "format": "uuid",
+                "title": "Slot Id",
+                "type": "string"
+              },
+              "appointment_type": {
+                "enum": [
+                  "initial_consultation",
+                  "fracture_follow_up",
+                  "imaging",
+                  "physiotherapy",
+                  "other"
+                ],
+                "title": "Appointment Type",
+                "type": "string"
+              },
+              "starts_at": {
+                "format": "date-time",
+                "title": "Starts At",
+                "type": "string"
+              },
+              "ends_at": {
+                "format": "date-time",
+                "title": "Ends At",
+                "type": "string"
+              },
+              "timezone": {
+                "description": "IANA clinic timezone; the timestamps use its offset at their respective instants.",
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Timezone",
+                "type": "string"
+              },
+              "clinician": {
+                "$ref": "#/$defs/Clinician"
+              },
+              "location": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Location",
+                "type": "string"
+              }
+            },
+            "required": [
+              "slot_id",
+              "appointment_type",
+              "starts_at",
+              "ends_at",
+              "timezone",
+              "clinician",
+              "location"
+            ],
+            "title": "AvailableSlot",
+            "type": "object"
+          },
+          "AvailableSlotsData": {
+            "additionalProperties": false,
+            "properties": {
+              "slots": {
+                "items": {
+                  "$ref": "#/$defs/AvailableSlot"
+                },
+                "maxItems": 100,
+                "title": "Slots",
+                "type": "array"
+              },
+              "as_of": {
+                "description": "Server observation time; availability is not a reservation.",
+                "format": "date-time",
+                "title": "As Of",
+                "type": "string"
+              },
+              "has_more": {
+                "description": "Additional matching slots existed at as_of beyond the requested result limit.",
+                "title": "Has More",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "slots",
+              "as_of",
+              "has_more"
+            ],
+            "title": "AvailableSlotsData",
+            "type": "object"
+          },
+          "BookingErrorResponse_Literal__find_available_slots___": {
+            "additionalProperties": false,
+            "properties": {
+              "contract_version": {
+                "const": "1.0.0",
+                "title": "Contract Version",
+                "type": "string"
+              },
+              "status": {
+                "const": "error",
+                "title": "Status",
+                "type": "string"
+              },
+              "data": {
+                "title": "Data",
+                "type": "null"
+              },
+              "error": {
+                "$ref": "#/$defs/BookingToolError"
+              },
+              "warnings": {
+                "items": {
+                  "$ref": "#/$defs/ToolWarning"
+                },
+                "maxItems": 0,
+                "title": "Warnings",
+                "type": "array"
+              },
+              "meta": {
+                "$ref": "#/$defs/ToolMetadata_Literal__find_available_slots___"
+              }
+            },
+            "required": [
+              "contract_version",
+              "status",
+              "data",
+              "error",
+              "warnings",
+              "meta"
+            ],
+            "title": "BookingErrorResponse[Literal['find_available_slots']]",
+            "type": "object"
+          },
+          "BookingToolError": {
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "enum": [
+                  "INVALID_ARGUMENT",
+                  "IDENTITY_UNRESOLVED",
+                  "CASE_CONTEXT_MISMATCH",
+                  "SESSION_CONTEXT_MISMATCH",
+                  "CLINIC_CONTEXT_MISMATCH",
+                  "CASE_NOT_FOUND",
+                  "RECORD_NOT_FOUND",
+                  "SLOT_NOT_OFFERED",
+                  "SLOT_UNAVAILABLE",
+                  "DRAFT_SUPERSEDED",
+                  "HOLD_EXPIRED",
+                  "CONFIRMATION_REQUIRED",
+                  "CONFIRMATION_STALE",
+                  "PATIENT_CONFLICT",
+                  "CASE_NOT_BOOKABLE",
+                  "TIMEOUT",
+                  "BACKEND_UNAVAILABLE",
+                  "INTERNAL_ERROR"
+                ],
+                "title": "Code",
+                "type": "string"
+              },
+              "message": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Message",
+                "type": "string"
+              },
+              "retryable": {
+                "description": "Only transient failures; for an uncertain commit, recover using get_booking_status before announcing an outcome.",
+                "title": "Retryable",
+                "type": "boolean"
+              },
+              "candidates": {
+                "description": "Always empty; never disclose another case or substitute a different slot.",
+                "items": {
+                  "$ref": "#/$defs/Candidate"
+                },
+                "maxItems": 0,
+                "title": "Candidates",
+                "type": "array"
+              }
+            },
+            "required": [
+              "code",
+              "message",
+              "retryable",
+              "candidates"
+            ],
+            "title": "BookingToolError",
+            "type": "object"
+          },
+          "Candidate": {
+            "additionalProperties": false,
+            "description": "Minimal selection information from an already-confirmed case only.",
+            "properties": {
+              "record_type": {
+                "enum": [
+                  "study",
+                  "model_result",
+                  "reviewed_report"
+                ],
+                "title": "Record Type",
+                "type": "string"
+              },
+              "record_id": {
+                "maxLength": 64,
+                "minLength": 1,
+                "title": "Record Id",
+                "type": "string"
+              },
+              "label": {
+                "description": "Minimal distinguishing label, such as study date and body part.",
+                "title": "Label",
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_type",
+              "record_id",
+              "label"
+            ],
+            "title": "Candidate",
+            "type": "object"
+          },
+          "Clinician": {
+            "additionalProperties": false,
+            "description": "A synthetic clinician, not a real person copied from clinical data.",
+            "properties": {
+              "clinician_id": {
+                "maxLength": 64,
+                "minLength": 1,
+                "title": "Clinician Id",
+                "type": "string"
+              },
+              "display_name": {
+                "title": "Display Name",
+                "type": "string"
+              }
+            },
+            "required": [
+              "clinician_id",
+              "display_name"
+            ],
+            "title": "Clinician",
+            "type": "object"
+          },
+          "SuccessResponse_AvailableSlotsData_Literal__find_available_slots___": {
+            "additionalProperties": false,
+            "properties": {
+              "contract_version": {
+                "const": "1.0.0",
+                "title": "Contract Version",
+                "type": "string"
+              },
+              "status": {
+                "const": "ok",
+                "title": "Status",
+                "type": "string"
+              },
+              "data": {
+                "$ref": "#/$defs/AvailableSlotsData"
+              },
+              "error": {
+                "title": "Error",
+                "type": "null"
+              },
+              "warnings": {
+                "items": {
+                  "$ref": "#/$defs/ToolWarning"
+                },
+                "title": "Warnings",
+                "type": "array"
+              },
+              "meta": {
+                "$ref": "#/$defs/ToolMetadata_Literal__find_available_slots___"
+              }
+            },
+            "required": [
+              "contract_version",
+              "status",
+              "data",
+              "error",
+              "warnings",
+              "meta"
+            ],
+            "title": "SuccessResponse[AvailableSlotsData, Literal['find_available_slots']]",
+            "type": "object"
+          },
+          "ToolMetadata_Literal__find_available_slots___": {
+            "additionalProperties": false,
+            "properties": {
+              "request_id": {
+                "format": "uuid",
+                "title": "Request Id",
+                "type": "string"
+              },
+              "tool_name": {
+                "const": "find_available_slots",
+                "title": "Tool Name",
+                "type": "string"
+              },
+              "retrieved_at": {
+                "format": "date-time",
+                "title": "Retrieved At",
+                "type": "string"
+              },
+              "duration_ms": {
+                "minimum": 0,
+                "title": "Duration Ms",
+                "type": "integer"
+              },
+              "case_context_version": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Case Context Version"
+              }
+            },
+            "required": [
+              "request_id",
+              "tool_name",
+              "retrieved_at",
+              "duration_ms",
+              "case_context_version"
+            ],
+            "title": "ToolMetadata[Literal['find_available_slots']]",
+            "type": "object"
+          },
+          "ToolWarning": {
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "enum": [
+                  "HISTORICAL_RECORD",
+                  "INCOMPLETE_RECORD"
+                ],
+                "title": "Code",
+                "type": "string"
+              },
+              "message": {
+                "title": "Message",
+                "type": "string"
+              },
+              "evidence_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Evidence Ids",
+                "type": "array"
+              }
+            },
+            "required": [
+              "code",
+              "message",
+              "evidence_ids"
+            ],
+            "title": "ToolWarning",
+            "type": "object"
+          }
+        },
+        "discriminator": {
+          "mapping": {
+            "error": "#/$defs/BookingErrorResponse_Literal__find_available_slots___",
+            "ok": "#/$defs/SuccessResponse_AvailableSlotsData_Literal__find_available_slots___"
+          },
+          "propertyName": "status"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/SuccessResponse_AvailableSlotsData_Literal__find_available_slots___"
+          },
+          {
+            "$ref": "#/$defs/BookingErrorResponse_Literal__find_available_slots___"
+          }
+        ]
+      }
+    },
+    {
+      "name": "prepare_booking",
+      "description": "Prepare the exact offered slot for the server-confirmed case and permitted conversation. Recheck availability, place a short hold (initially up to two minutes), and return authoritative readback details. This is NOT a confirmed appointment. Retrying the same active selection returns the same draft and booking_request_id without extending expiry. Changing selection supersedes the old draft and releases its hold. Read back details and ask Shall I book this? before explicit controller-recorded confirmation.",
+      "read_only": false,
+      "input_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "case_id": {
+            "description": "Must equal the server-managed confirmed case; never invent an ID.",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Case Id",
+            "type": "string"
+          },
+          "slot_id": {
+            "description": "Exact opaque slot ID returned by find_available_slots in this permitted conversation.",
+            "format": "uuid",
+            "title": "Slot Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id",
+          "slot_id"
+        ],
+        "title": "PrepareBookingArgs",
+        "type": "object"
+      },
+      "output_schema": {
+        "$defs": {
+          "AvailableSlot": {
+            "additionalProperties": false,
+            "properties": {
+              "slot_id": {
+                "format": "uuid",
+                "title": "Slot Id",
+                "type": "string"
+              },
+              "appointment_type": {
+                "enum": [
+                  "initial_consultation",
+                  "fracture_follow_up",
+                  "imaging",
+                  "physiotherapy",
+                  "other"
+                ],
+                "title": "Appointment Type",
+                "type": "string"
+              },
+              "starts_at": {
+                "format": "date-time",
+                "title": "Starts At",
+                "type": "string"
+              },
+              "ends_at": {
+                "format": "date-time",
+                "title": "Ends At",
+                "type": "string"
+              },
+              "timezone": {
+                "description": "IANA clinic timezone; the timestamps use its offset at their respective instants.",
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Timezone",
+                "type": "string"
+              },
+              "clinician": {
+                "$ref": "#/$defs/Clinician"
+              },
+              "location": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Location",
+                "type": "string"
+              }
+            },
+            "required": [
+              "slot_id",
+              "appointment_type",
+              "starts_at",
+              "ends_at",
+              "timezone",
+              "clinician",
+              "location"
+            ],
+            "title": "AvailableSlot",
+            "type": "object"
+          },
+          "BookingErrorResponse_Literal__prepare_booking___": {
+            "additionalProperties": false,
+            "properties": {
+              "contract_version": {
+                "const": "1.0.0",
+                "title": "Contract Version",
+                "type": "string"
+              },
+              "status": {
+                "const": "error",
+                "title": "Status",
+                "type": "string"
+              },
+              "data": {
+                "title": "Data",
+                "type": "null"
+              },
+              "error": {
+                "$ref": "#/$defs/BookingToolError"
+              },
+              "warnings": {
+                "items": {
+                  "$ref": "#/$defs/ToolWarning"
+                },
+                "maxItems": 0,
+                "title": "Warnings",
+                "type": "array"
+              },
+              "meta": {
+                "$ref": "#/$defs/ToolMetadata_Literal__prepare_booking___"
+              }
+            },
+            "required": [
+              "contract_version",
+              "status",
+              "data",
+              "error",
+              "warnings",
+              "meta"
+            ],
+            "title": "BookingErrorResponse[Literal['prepare_booking']]",
+            "type": "object"
+          },
+          "BookingToolError": {
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "enum": [
+                  "INVALID_ARGUMENT",
+                  "IDENTITY_UNRESOLVED",
+                  "CASE_CONTEXT_MISMATCH",
+                  "SESSION_CONTEXT_MISMATCH",
+                  "CLINIC_CONTEXT_MISMATCH",
+                  "CASE_NOT_FOUND",
+                  "RECORD_NOT_FOUND",
+                  "SLOT_NOT_OFFERED",
+                  "SLOT_UNAVAILABLE",
+                  "DRAFT_SUPERSEDED",
+                  "HOLD_EXPIRED",
+                  "CONFIRMATION_REQUIRED",
+                  "CONFIRMATION_STALE",
+                  "PATIENT_CONFLICT",
+                  "CASE_NOT_BOOKABLE",
+                  "TIMEOUT",
+                  "BACKEND_UNAVAILABLE",
+                  "INTERNAL_ERROR"
+                ],
+                "title": "Code",
+                "type": "string"
+              },
+              "message": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Message",
+                "type": "string"
+              },
+              "retryable": {
+                "description": "Only transient failures; for an uncertain commit, recover using get_booking_status before announcing an outcome.",
+                "title": "Retryable",
+                "type": "boolean"
+              },
+              "candidates": {
+                "description": "Always empty; never disclose another case or substitute a different slot.",
+                "items": {
+                  "$ref": "#/$defs/Candidate"
+                },
+                "maxItems": 0,
+                "title": "Candidates",
+                "type": "array"
+              }
+            },
+            "required": [
+              "code",
+              "message",
+              "retryable",
+              "candidates"
+            ],
+            "title": "BookingToolError",
+            "type": "object"
+          },
+          "Candidate": {
+            "additionalProperties": false,
+            "description": "Minimal selection information from an already-confirmed case only.",
+            "properties": {
+              "record_type": {
+                "enum": [
+                  "study",
+                  "model_result",
+                  "reviewed_report"
+                ],
+                "title": "Record Type",
+                "type": "string"
+              },
+              "record_id": {
+                "maxLength": 64,
+                "minLength": 1,
+                "title": "Record Id",
+                "type": "string"
+              },
+              "label": {
+                "description": "Minimal distinguishing label, such as study date and body part.",
+                "title": "Label",
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_type",
+              "record_id",
+              "label"
+            ],
+            "title": "Candidate",
+            "type": "object"
+          },
+          "Clinician": {
+            "additionalProperties": false,
+            "description": "A synthetic clinician, not a real person copied from clinical data.",
+            "properties": {
+              "clinician_id": {
+                "maxLength": 64,
+                "minLength": 1,
+                "title": "Clinician Id",
+                "type": "string"
+              },
+              "display_name": {
+                "title": "Display Name",
+                "type": "string"
+              }
+            },
+            "required": [
+              "clinician_id",
+              "display_name"
+            ],
+            "title": "Clinician",
+            "type": "object"
+          },
+          "PreparedBookingData": {
+            "additionalProperties": false,
+            "properties": {
+              "draft_id": {
+                "format": "uuid",
+                "title": "Draft Id",
+                "type": "string"
+              },
+              "booking_request_id": {
+                "format": "uuid",
+                "title": "Booking Request Id",
+                "type": "string"
+              },
+              "hold_expires_at": {
+                "description": "Exclusive expiry boundary; retrying the same active selection never extends it.",
+                "format": "date-time",
+                "title": "Hold Expires At",
+                "type": "string"
+              },
+              "case_id": {
+                "maxLength": 64,
+                "minLength": 1,
+                "title": "Case Id",
+                "type": "string"
+              },
+              "patient_display_name": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Patient Display Name",
+                "type": "string"
+              },
+              "slot": {
+                "$ref": "#/$defs/AvailableSlot",
+                "description": "Authoritative appointment details to read back before asking for confirmation."
+              }
+            },
+            "required": [
+              "draft_id",
+              "booking_request_id",
+              "hold_expires_at",
+              "case_id",
+              "patient_display_name",
+              "slot"
+            ],
+            "title": "PreparedBookingData",
+            "type": "object"
+          },
+          "SuccessResponse_PreparedBookingData_Literal__prepare_booking___": {
+            "additionalProperties": false,
+            "properties": {
+              "contract_version": {
+                "const": "1.0.0",
+                "title": "Contract Version",
+                "type": "string"
+              },
+              "status": {
+                "const": "ok",
+                "title": "Status",
+                "type": "string"
+              },
+              "data": {
+                "$ref": "#/$defs/PreparedBookingData"
+              },
+              "error": {
+                "title": "Error",
+                "type": "null"
+              },
+              "warnings": {
+                "items": {
+                  "$ref": "#/$defs/ToolWarning"
+                },
+                "title": "Warnings",
+                "type": "array"
+              },
+              "meta": {
+                "$ref": "#/$defs/ToolMetadata_Literal__prepare_booking___"
+              }
+            },
+            "required": [
+              "contract_version",
+              "status",
+              "data",
+              "error",
+              "warnings",
+              "meta"
+            ],
+            "title": "SuccessResponse[PreparedBookingData, Literal['prepare_booking']]",
+            "type": "object"
+          },
+          "ToolMetadata_Literal__prepare_booking___": {
+            "additionalProperties": false,
+            "properties": {
+              "request_id": {
+                "format": "uuid",
+                "title": "Request Id",
+                "type": "string"
+              },
+              "tool_name": {
+                "const": "prepare_booking",
+                "title": "Tool Name",
+                "type": "string"
+              },
+              "retrieved_at": {
+                "format": "date-time",
+                "title": "Retrieved At",
+                "type": "string"
+              },
+              "duration_ms": {
+                "minimum": 0,
+                "title": "Duration Ms",
+                "type": "integer"
+              },
+              "case_context_version": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Case Context Version"
+              }
+            },
+            "required": [
+              "request_id",
+              "tool_name",
+              "retrieved_at",
+              "duration_ms",
+              "case_context_version"
+            ],
+            "title": "ToolMetadata[Literal['prepare_booking']]",
+            "type": "object"
+          },
+          "ToolWarning": {
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "enum": [
+                  "HISTORICAL_RECORD",
+                  "INCOMPLETE_RECORD"
+                ],
+                "title": "Code",
+                "type": "string"
+              },
+              "message": {
+                "title": "Message",
+                "type": "string"
+              },
+              "evidence_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Evidence Ids",
+                "type": "array"
+              }
+            },
+            "required": [
+              "code",
+              "message",
+              "evidence_ids"
+            ],
+            "title": "ToolWarning",
+            "type": "object"
+          }
+        },
+        "discriminator": {
+          "mapping": {
+            "error": "#/$defs/BookingErrorResponse_Literal__prepare_booking___",
+            "ok": "#/$defs/SuccessResponse_PreparedBookingData_Literal__prepare_booking___"
+          },
+          "propertyName": "status"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/SuccessResponse_PreparedBookingData_Literal__prepare_booking___"
+          },
+          {
+            "$ref": "#/$defs/BookingErrorResponse_Literal__prepare_booking___"
+          }
+        ]
+      }
+    },
+    {
+      "name": "book_appointment",
+      "description": "Commit only the current held draft for the confirmed case/permitted conversation AFTER explicit user confirmation of those exact readback details. Confirmation is recorded by the trusted conversation controller, never a confirmed boolean or LLM assertion. Subsequent correction invalidates confirmation. Appointment, allocation and successful request outcome commit atomically. Repeating the same successfully booked draft returns the same appointment; do not create a new request after a lost response. Use get_booking_status for uncertain outcomes and announce success only from a committed result.",
+      "read_only": false,
+      "input_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "case_id": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Case Id",
+            "type": "string"
+          },
+          "draft_id": {
+            "description": "Exact current prepared draft. Explicit confirmation is recorded by the controller, never supplied as a tool argument.",
+            "format": "uuid",
+            "title": "Draft Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id",
+          "draft_id"
+        ],
+        "title": "BookAppointmentArgs",
+        "type": "object"
+      },
+      "output_schema": {
+        "$defs": {
+          "BookAppointmentData": {
+            "additionalProperties": false,
+            "properties": {
+              "booking_request_id": {
+                "format": "uuid",
+                "title": "Booking Request Id",
+                "type": "string"
+              },
+              "appointment": {
+                "$ref": "#/$defs/BookedAppointment"
+              }
+            },
+            "required": [
+              "booking_request_id",
+              "appointment"
+            ],
+            "title": "BookAppointmentData",
+            "type": "object"
+          },
+          "BookedAppointment": {
+            "additionalProperties": false,
+            "properties": {
+              "appointment_id": {
+                "maxLength": 64,
+                "minLength": 1,
+                "title": "Appointment Id",
+                "type": "string"
+              },
+              "case_id": {
+                "maxLength": 64,
+                "minLength": 1,
+                "title": "Case Id",
+                "type": "string"
+              },
+              "patient_display_name": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Patient Display Name",
+                "type": "string"
+              },
+              "slot_id": {
+                "format": "uuid",
+                "title": "Slot Id",
+                "type": "string"
+              },
+              "appointment_type": {
+                "enum": [
+                  "initial_consultation",
+                  "fracture_follow_up",
+                  "imaging",
+                  "physiotherapy",
+                  "other"
+                ],
+                "title": "Appointment Type",
+                "type": "string"
+              },
+              "starts_at": {
+                "format": "date-time",
+                "title": "Starts At",
+                "type": "string"
+              },
+              "ends_at": {
+                "format": "date-time",
+                "title": "Ends At",
+                "type": "string"
+              },
+              "timezone": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Timezone",
+                "type": "string"
+              },
+              "clinician": {
+                "$ref": "#/$defs/Clinician"
+              },
+              "location": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Location",
+                "type": "string"
+              },
+              "status": {
+                "const": "confirmed",
+                "title": "Status",
+                "type": "string"
+              }
+            },
+            "required": [
+              "appointment_id",
+              "case_id",
+              "patient_display_name",
+              "slot_id",
+              "appointment_type",
+              "starts_at",
+              "ends_at",
+              "timezone",
+              "clinician",
+              "location",
+              "status"
+            ],
+            "title": "BookedAppointment",
+            "type": "object"
+          },
+          "BookingErrorResponse_Literal__book_appointment___": {
+            "additionalProperties": false,
+            "properties": {
+              "contract_version": {
+                "const": "1.0.0",
+                "title": "Contract Version",
+                "type": "string"
+              },
+              "status": {
+                "const": "error",
+                "title": "Status",
+                "type": "string"
+              },
+              "data": {
+                "title": "Data",
+                "type": "null"
+              },
+              "error": {
+                "$ref": "#/$defs/BookingToolError"
+              },
+              "warnings": {
+                "items": {
+                  "$ref": "#/$defs/ToolWarning"
+                },
+                "maxItems": 0,
+                "title": "Warnings",
+                "type": "array"
+              },
+              "meta": {
+                "$ref": "#/$defs/ToolMetadata_Literal__book_appointment___"
+              }
+            },
+            "required": [
+              "contract_version",
+              "status",
+              "data",
+              "error",
+              "warnings",
+              "meta"
+            ],
+            "title": "BookingErrorResponse[Literal['book_appointment']]",
+            "type": "object"
+          },
+          "BookingToolError": {
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "enum": [
+                  "INVALID_ARGUMENT",
+                  "IDENTITY_UNRESOLVED",
+                  "CASE_CONTEXT_MISMATCH",
+                  "SESSION_CONTEXT_MISMATCH",
+                  "CLINIC_CONTEXT_MISMATCH",
+                  "CASE_NOT_FOUND",
+                  "RECORD_NOT_FOUND",
+                  "SLOT_NOT_OFFERED",
+                  "SLOT_UNAVAILABLE",
+                  "DRAFT_SUPERSEDED",
+                  "HOLD_EXPIRED",
+                  "CONFIRMATION_REQUIRED",
+                  "CONFIRMATION_STALE",
+                  "PATIENT_CONFLICT",
+                  "CASE_NOT_BOOKABLE",
+                  "TIMEOUT",
+                  "BACKEND_UNAVAILABLE",
+                  "INTERNAL_ERROR"
+                ],
+                "title": "Code",
+                "type": "string"
+              },
+              "message": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Message",
+                "type": "string"
+              },
+              "retryable": {
+                "description": "Only transient failures; for an uncertain commit, recover using get_booking_status before announcing an outcome.",
+                "title": "Retryable",
+                "type": "boolean"
+              },
+              "candidates": {
+                "description": "Always empty; never disclose another case or substitute a different slot.",
+                "items": {
+                  "$ref": "#/$defs/Candidate"
+                },
+                "maxItems": 0,
+                "title": "Candidates",
+                "type": "array"
+              }
+            },
+            "required": [
+              "code",
+              "message",
+              "retryable",
+              "candidates"
+            ],
+            "title": "BookingToolError",
+            "type": "object"
+          },
+          "Candidate": {
+            "additionalProperties": false,
+            "description": "Minimal selection information from an already-confirmed case only.",
+            "properties": {
+              "record_type": {
+                "enum": [
+                  "study",
+                  "model_result",
+                  "reviewed_report"
+                ],
+                "title": "Record Type",
+                "type": "string"
+              },
+              "record_id": {
+                "maxLength": 64,
+                "minLength": 1,
+                "title": "Record Id",
+                "type": "string"
+              },
+              "label": {
+                "description": "Minimal distinguishing label, such as study date and body part.",
+                "title": "Label",
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_type",
+              "record_id",
+              "label"
+            ],
+            "title": "Candidate",
+            "type": "object"
+          },
+          "Clinician": {
+            "additionalProperties": false,
+            "description": "A synthetic clinician, not a real person copied from clinical data.",
+            "properties": {
+              "clinician_id": {
+                "maxLength": 64,
+                "minLength": 1,
+                "title": "Clinician Id",
+                "type": "string"
+              },
+              "display_name": {
+                "title": "Display Name",
+                "type": "string"
+              }
+            },
+            "required": [
+              "clinician_id",
+              "display_name"
+            ],
+            "title": "Clinician",
+            "type": "object"
+          },
+          "SuccessResponse_BookAppointmentData_Literal__book_appointment___": {
+            "additionalProperties": false,
+            "properties": {
+              "contract_version": {
+                "const": "1.0.0",
+                "title": "Contract Version",
+                "type": "string"
+              },
+              "status": {
+                "const": "ok",
+                "title": "Status",
+                "type": "string"
+              },
+              "data": {
+                "$ref": "#/$defs/BookAppointmentData"
+              },
+              "error": {
+                "title": "Error",
+                "type": "null"
+              },
+              "warnings": {
+                "items": {
+                  "$ref": "#/$defs/ToolWarning"
+                },
+                "title": "Warnings",
+                "type": "array"
+              },
+              "meta": {
+                "$ref": "#/$defs/ToolMetadata_Literal__book_appointment___"
+              }
+            },
+            "required": [
+              "contract_version",
+              "status",
+              "data",
+              "error",
+              "warnings",
+              "meta"
+            ],
+            "title": "SuccessResponse[BookAppointmentData, Literal['book_appointment']]",
+            "type": "object"
+          },
+          "ToolMetadata_Literal__book_appointment___": {
+            "additionalProperties": false,
+            "properties": {
+              "request_id": {
+                "format": "uuid",
+                "title": "Request Id",
+                "type": "string"
+              },
+              "tool_name": {
+                "const": "book_appointment",
+                "title": "Tool Name",
+                "type": "string"
+              },
+              "retrieved_at": {
+                "format": "date-time",
+                "title": "Retrieved At",
+                "type": "string"
+              },
+              "duration_ms": {
+                "minimum": 0,
+                "title": "Duration Ms",
+                "type": "integer"
+              },
+              "case_context_version": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Case Context Version"
+              }
+            },
+            "required": [
+              "request_id",
+              "tool_name",
+              "retrieved_at",
+              "duration_ms",
+              "case_context_version"
+            ],
+            "title": "ToolMetadata[Literal['book_appointment']]",
+            "type": "object"
+          },
+          "ToolWarning": {
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "enum": [
+                  "HISTORICAL_RECORD",
+                  "INCOMPLETE_RECORD"
+                ],
+                "title": "Code",
+                "type": "string"
+              },
+              "message": {
+                "title": "Message",
+                "type": "string"
+              },
+              "evidence_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Evidence Ids",
+                "type": "array"
+              }
+            },
+            "required": [
+              "code",
+              "message",
+              "evidence_ids"
+            ],
+            "title": "ToolWarning",
+            "type": "object"
+          }
+        },
+        "discriminator": {
+          "mapping": {
+            "error": "#/$defs/BookingErrorResponse_Literal__book_appointment___",
+            "ok": "#/$defs/SuccessResponse_BookAppointmentData_Literal__book_appointment___"
+          },
+          "propertyName": "status"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/SuccessResponse_BookAppointmentData_Literal__book_appointment___"
+          },
+          {
+            "$ref": "#/$defs/BookingErrorResponse_Literal__book_appointment___"
+          }
+        ]
+      }
+    },
+    {
+      "name": "get_booking_status",
+      "description": "Look up the persistent booking attempt for the server-confirmed case/permitted conversation. Read-only recovery after a timeout or lost booking response; never create, retry or cancel a booking. status=ok means lookup success, not booking success: only data.booking_state=booked establishes a committed appointment. pending is unresolved, expired needs new preparation, failed has a recorded terminal reason. A committed attempt stays booked even after its former hold expiry.",
+      "read_only": true,
+      "input_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "case_id": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Case Id",
+            "type": "string"
+          },
+          "booking_request_id": {
+            "description": "Persistent booking-attempt ID returned by preparation; NOT meta.request_id.",
+            "format": "uuid",
+            "title": "Booking Request Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id",
+          "booking_request_id"
+        ],
+        "title": "GetBookingStatusArgs",
+        "type": "object"
+      },
+      "output_schema": {
+        "$defs": {
+          "BookedAppointment": {
+            "additionalProperties": false,
+            "properties": {
+              "appointment_id": {
+                "maxLength": 64,
+                "minLength": 1,
+                "title": "Appointment Id",
+                "type": "string"
+              },
+              "case_id": {
+                "maxLength": 64,
+                "minLength": 1,
+                "title": "Case Id",
+                "type": "string"
+              },
+              "patient_display_name": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Patient Display Name",
+                "type": "string"
+              },
+              "slot_id": {
+                "format": "uuid",
+                "title": "Slot Id",
+                "type": "string"
+              },
+              "appointment_type": {
+                "enum": [
+                  "initial_consultation",
+                  "fracture_follow_up",
+                  "imaging",
+                  "physiotherapy",
+                  "other"
+                ],
+                "title": "Appointment Type",
+                "type": "string"
+              },
+              "starts_at": {
+                "format": "date-time",
+                "title": "Starts At",
+                "type": "string"
+              },
+              "ends_at": {
+                "format": "date-time",
+                "title": "Ends At",
+                "type": "string"
+              },
+              "timezone": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Timezone",
+                "type": "string"
+              },
+              "clinician": {
+                "$ref": "#/$defs/Clinician"
+              },
+              "location": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Location",
+                "type": "string"
+              },
+              "status": {
+                "const": "confirmed",
+                "title": "Status",
+                "type": "string"
+              }
+            },
+            "required": [
+              "appointment_id",
+              "case_id",
+              "patient_display_name",
+              "slot_id",
+              "appointment_type",
+              "starts_at",
+              "ends_at",
+              "timezone",
+              "clinician",
+              "location",
+              "status"
+            ],
+            "title": "BookedAppointment",
+            "type": "object"
+          },
+          "BookedBookingStatus": {
+            "additionalProperties": false,
+            "properties": {
+              "booking_request_id": {
+                "format": "uuid",
+                "title": "Booking Request Id",
+                "type": "string"
+              },
+              "draft_id": {
+                "format": "uuid",
+                "title": "Draft Id",
+                "type": "string"
+              },
+              "as_of": {
+                "format": "date-time",
+                "title": "As Of",
+                "type": "string"
+              },
+              "hold_expires_at": {
+                "description": "Historical hold expiry; it does not undo an already committed appointment.",
+                "format": "date-time",
+                "title": "Hold Expires At",
+                "type": "string"
+              },
+              "booking_state": {
+                "const": "booked",
+                "title": "Booking State",
+                "type": "string"
+              },
+              "appointment": {
+                "$ref": "#/$defs/BookedAppointment"
+              },
+              "failure": {
+                "title": "Failure",
+                "type": "null"
+              }
+            },
+            "required": [
+              "booking_request_id",
+              "draft_id",
+              "as_of",
+              "hold_expires_at",
+              "booking_state",
+              "appointment",
+              "failure"
+            ],
+            "title": "BookedBookingStatus",
+            "type": "object"
+          },
+          "BookingErrorResponse_Literal__get_booking_status___": {
+            "additionalProperties": false,
+            "properties": {
+              "contract_version": {
+                "const": "1.0.0",
+                "title": "Contract Version",
+                "type": "string"
+              },
+              "status": {
+                "const": "error",
+                "title": "Status",
+                "type": "string"
+              },
+              "data": {
+                "title": "Data",
+                "type": "null"
+              },
+              "error": {
+                "$ref": "#/$defs/BookingToolError"
+              },
+              "warnings": {
+                "items": {
+                  "$ref": "#/$defs/ToolWarning"
+                },
+                "maxItems": 0,
+                "title": "Warnings",
+                "type": "array"
+              },
+              "meta": {
+                "$ref": "#/$defs/ToolMetadata_Literal__get_booking_status___"
+              }
+            },
+            "required": [
+              "contract_version",
+              "status",
+              "data",
+              "error",
+              "warnings",
+              "meta"
+            ],
+            "title": "BookingErrorResponse[Literal['get_booking_status']]",
+            "type": "object"
+          },
+          "BookingFailure": {
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "enum": [
+                  "DRAFT_SUPERSEDED",
+                  "SLOT_UNAVAILABLE",
+                  "PATIENT_CONFLICT",
+                  "CASE_NOT_BOOKABLE"
+                ],
+                "title": "Code",
+                "type": "string"
+              },
+              "message": {
+                "description": "Persisted safe failure reason; no SQL, secrets or another patient's data.",
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Message",
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ],
+            "title": "BookingFailure",
+            "type": "object"
+          },
+          "BookingToolError": {
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "enum": [
+                  "INVALID_ARGUMENT",
+                  "IDENTITY_UNRESOLVED",
+                  "CASE_CONTEXT_MISMATCH",
+                  "SESSION_CONTEXT_MISMATCH",
+                  "CLINIC_CONTEXT_MISMATCH",
+                  "CASE_NOT_FOUND",
+                  "RECORD_NOT_FOUND",
+                  "SLOT_NOT_OFFERED",
+                  "SLOT_UNAVAILABLE",
+                  "DRAFT_SUPERSEDED",
+                  "HOLD_EXPIRED",
+                  "CONFIRMATION_REQUIRED",
+                  "CONFIRMATION_STALE",
+                  "PATIENT_CONFLICT",
+                  "CASE_NOT_BOOKABLE",
+                  "TIMEOUT",
+                  "BACKEND_UNAVAILABLE",
+                  "INTERNAL_ERROR"
+                ],
+                "title": "Code",
+                "type": "string"
+              },
+              "message": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Message",
+                "type": "string"
+              },
+              "retryable": {
+                "description": "Only transient failures; for an uncertain commit, recover using get_booking_status before announcing an outcome.",
+                "title": "Retryable",
+                "type": "boolean"
+              },
+              "candidates": {
+                "description": "Always empty; never disclose another case or substitute a different slot.",
+                "items": {
+                  "$ref": "#/$defs/Candidate"
+                },
+                "maxItems": 0,
+                "title": "Candidates",
+                "type": "array"
+              }
+            },
+            "required": [
+              "code",
+              "message",
+              "retryable",
+              "candidates"
+            ],
+            "title": "BookingToolError",
+            "type": "object"
+          },
+          "Candidate": {
+            "additionalProperties": false,
+            "description": "Minimal selection information from an already-confirmed case only.",
+            "properties": {
+              "record_type": {
+                "enum": [
+                  "study",
+                  "model_result",
+                  "reviewed_report"
+                ],
+                "title": "Record Type",
+                "type": "string"
+              },
+              "record_id": {
+                "maxLength": 64,
+                "minLength": 1,
+                "title": "Record Id",
+                "type": "string"
+              },
+              "label": {
+                "description": "Minimal distinguishing label, such as study date and body part.",
+                "title": "Label",
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_type",
+              "record_id",
+              "label"
+            ],
+            "title": "Candidate",
+            "type": "object"
+          },
+          "Clinician": {
+            "additionalProperties": false,
+            "description": "A synthetic clinician, not a real person copied from clinical data.",
+            "properties": {
+              "clinician_id": {
+                "maxLength": 64,
+                "minLength": 1,
+                "title": "Clinician Id",
+                "type": "string"
+              },
+              "display_name": {
+                "title": "Display Name",
+                "type": "string"
+              }
+            },
+            "required": [
+              "clinician_id",
+              "display_name"
+            ],
+            "title": "Clinician",
+            "type": "object"
+          },
+          "ExpiredBookingStatus": {
+            "additionalProperties": false,
+            "properties": {
+              "booking_request_id": {
+                "format": "uuid",
+                "title": "Booking Request Id",
+                "type": "string"
+              },
+              "draft_id": {
+                "format": "uuid",
+                "title": "Draft Id",
+                "type": "string"
+              },
+              "as_of": {
+                "format": "date-time",
+                "title": "As Of",
+                "type": "string"
+              },
+              "hold_expires_at": {
+                "description": "Historical hold expiry; it does not undo an already committed appointment.",
+                "format": "date-time",
+                "title": "Hold Expires At",
+                "type": "string"
+              },
+              "booking_state": {
+                "const": "expired",
+                "title": "Booking State",
+                "type": "string"
+              },
+              "appointment": {
+                "title": "Appointment",
+                "type": "null"
+              },
+              "failure": {
+                "title": "Failure",
+                "type": "null"
+              }
+            },
+            "required": [
+              "booking_request_id",
+              "draft_id",
+              "as_of",
+              "hold_expires_at",
+              "booking_state",
+              "appointment",
+              "failure"
+            ],
+            "title": "ExpiredBookingStatus",
+            "type": "object"
+          },
+          "FailedBookingStatus": {
+            "additionalProperties": false,
+            "properties": {
+              "booking_request_id": {
+                "format": "uuid",
+                "title": "Booking Request Id",
+                "type": "string"
+              },
+              "draft_id": {
+                "format": "uuid",
+                "title": "Draft Id",
+                "type": "string"
+              },
+              "as_of": {
+                "format": "date-time",
+                "title": "As Of",
+                "type": "string"
+              },
+              "hold_expires_at": {
+                "description": "Historical hold expiry; it does not undo an already committed appointment.",
+                "format": "date-time",
+                "title": "Hold Expires At",
+                "type": "string"
+              },
+              "booking_state": {
+                "const": "failed",
+                "title": "Booking State",
+                "type": "string"
+              },
+              "appointment": {
+                "title": "Appointment",
+                "type": "null"
+              },
+              "failure": {
+                "$ref": "#/$defs/BookingFailure"
+              }
+            },
+            "required": [
+              "booking_request_id",
+              "draft_id",
+              "as_of",
+              "hold_expires_at",
+              "booking_state",
+              "appointment",
+              "failure"
+            ],
+            "title": "FailedBookingStatus",
+            "type": "object"
+          },
+          "PendingBookingStatus": {
+            "additionalProperties": false,
+            "properties": {
+              "booking_request_id": {
+                "format": "uuid",
+                "title": "Booking Request Id",
+                "type": "string"
+              },
+              "draft_id": {
+                "format": "uuid",
+                "title": "Draft Id",
+                "type": "string"
+              },
+              "as_of": {
+                "format": "date-time",
+                "title": "As Of",
+                "type": "string"
+              },
+              "hold_expires_at": {
+                "description": "Historical hold expiry; it does not undo an already committed appointment.",
+                "format": "date-time",
+                "title": "Hold Expires At",
+                "type": "string"
+              },
+              "booking_state": {
+                "const": "pending",
+                "title": "Booking State",
+                "type": "string"
+              },
+              "appointment": {
+                "title": "Appointment",
+                "type": "null"
+              },
+              "failure": {
+                "title": "Failure",
+                "type": "null"
+              }
+            },
+            "required": [
+              "booking_request_id",
+              "draft_id",
+              "as_of",
+              "hold_expires_at",
+              "booking_state",
+              "appointment",
+              "failure"
+            ],
+            "title": "PendingBookingStatus",
+            "type": "object"
+          },
+          "SuccessResponse_Annotated_Union_PendingBookingStatus__BookedBookingStatus__ExpiredBookingStatus__FailedBookingStatus___FieldInfo_annotation_NoneType__required_True__discriminator__booking_state____Literal__get_booking_status___": {
+            "additionalProperties": false,
+            "properties": {
+              "contract_version": {
+                "const": "1.0.0",
+                "title": "Contract Version",
+                "type": "string"
+              },
+              "status": {
+                "const": "ok",
+                "title": "Status",
+                "type": "string"
+              },
+              "data": {
+                "discriminator": {
+                  "mapping": {
+                    "booked": "#/$defs/BookedBookingStatus",
+                    "expired": "#/$defs/ExpiredBookingStatus",
+                    "failed": "#/$defs/FailedBookingStatus",
+                    "pending": "#/$defs/PendingBookingStatus"
+                  },
+                  "propertyName": "booking_state"
+                },
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/PendingBookingStatus"
+                  },
+                  {
+                    "$ref": "#/$defs/BookedBookingStatus"
+                  },
+                  {
+                    "$ref": "#/$defs/ExpiredBookingStatus"
+                  },
+                  {
+                    "$ref": "#/$defs/FailedBookingStatus"
+                  }
+                ],
+                "title": "Data"
+              },
+              "error": {
+                "title": "Error",
+                "type": "null"
+              },
+              "warnings": {
+                "items": {
+                  "$ref": "#/$defs/ToolWarning"
+                },
+                "title": "Warnings",
+                "type": "array"
+              },
+              "meta": {
+                "$ref": "#/$defs/ToolMetadata_Literal__get_booking_status___"
+              }
+            },
+            "required": [
+              "contract_version",
+              "status",
+              "data",
+              "error",
+              "warnings",
+              "meta"
+            ],
+            "title": "SuccessResponse[Annotated[Union[PendingBookingStatus, BookedBookingStatus, ExpiredBookingStatus, FailedBookingStatus], FieldInfo(annotation=NoneType, required=True, discriminator='booking_state')], Literal['get_booking_status']]",
+            "type": "object"
+          },
+          "ToolMetadata_Literal__get_booking_status___": {
+            "additionalProperties": false,
+            "properties": {
+              "request_id": {
+                "format": "uuid",
+                "title": "Request Id",
+                "type": "string"
+              },
+              "tool_name": {
+                "const": "get_booking_status",
+                "title": "Tool Name",
+                "type": "string"
+              },
+              "retrieved_at": {
+                "format": "date-time",
+                "title": "Retrieved At",
+                "type": "string"
+              },
+              "duration_ms": {
+                "minimum": 0,
+                "title": "Duration Ms",
+                "type": "integer"
+              },
+              "case_context_version": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Case Context Version"
+              }
+            },
+            "required": [
+              "request_id",
+              "tool_name",
+              "retrieved_at",
+              "duration_ms",
+              "case_context_version"
+            ],
+            "title": "ToolMetadata[Literal['get_booking_status']]",
+            "type": "object"
+          },
+          "ToolWarning": {
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "enum": [
+                  "HISTORICAL_RECORD",
+                  "INCOMPLETE_RECORD"
+                ],
+                "title": "Code",
+                "type": "string"
+              },
+              "message": {
+                "title": "Message",
+                "type": "string"
+              },
+              "evidence_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Evidence Ids",
+                "type": "array"
+              }
+            },
+            "required": [
+              "code",
+              "message",
+              "evidence_ids"
+            ],
+            "title": "ToolWarning",
+            "type": "object"
+          }
+        },
+        "discriminator": {
+          "mapping": {
+            "error": "#/$defs/BookingErrorResponse_Literal__get_booking_status___",
+            "ok": "#/$defs/SuccessResponse_Annotated_Union_PendingBookingStatus__BookedBookingStatus__ExpiredBookingStatus__FailedBookingStatus___FieldInfo_annotation_NoneType__required_True__discriminator__booking_state____Literal__get_booking_status___"
+          },
+          "propertyName": "status"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/SuccessResponse_Annotated_Union_PendingBookingStatus__BookedBookingStatus__ExpiredBookingStatus__FailedBookingStatus___FieldInfo_annotation_NoneType__required_True__discriminator__booking_state____Literal__get_booking_status___"
+          },
+          {
+            "$ref": "#/$defs/BookingErrorResponse_Literal__get_booking_status___"
+          }
+        ]
+      }
+    }
+  ]
+}

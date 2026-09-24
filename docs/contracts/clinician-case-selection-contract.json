@@ -1,0 +1,379 @@
+{
+  "name": "open_case",
+  "description": "Open an exact caller-supplied/confirmed case ID, or find minimal authorized identity candidates by name. Name matches return state=selection_required, NOT an opened case, even when status=ok. Offer the returned case IDs and ask which one; never select automatically or retrieve candidate clinical records to distinguish them. Do not disclose or enumerate birth dates, or require DOB verification for an exact case ID. Similar names are not identity proof. This clears the previous selected case even on failure/ambiguity; never fall back to old patient records. Call this before the four clinical read tools and after an identifier correction. Wait for status=ok AND data.state=selected in a completed tool round before clinical reads; never batch those reads with open_case. Independent reads may run in parallel afterwards. No database writes.",
+  "read_only": false,
+  "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+      "case_id": {
+        "anyOf": [
+          {
+            "maxLength": 64,
+            "minLength": 1,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "description": "Exact case ID spoken/confirmed by the caller, or null for a name search.",
+        "title": "Case Id"
+      },
+      "patient_name": {
+        "anyOf": [
+          {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "description": "Patient name/name fragment for identity candidates only, or null when opening an exact case ID.",
+        "title": "Patient Name"
+      }
+    },
+    "required": [
+      "case_id",
+      "patient_name"
+    ],
+    "title": "OpenCaseArgs",
+    "type": "object"
+  },
+  "output_schema": {
+    "$defs": {
+      "Candidate": {
+        "additionalProperties": false,
+        "description": "Minimal selection information from an already-confirmed case only.",
+        "properties": {
+          "record_type": {
+            "enum": [
+              "study",
+              "model_result",
+              "reviewed_report"
+            ],
+            "title": "Record Type",
+            "type": "string"
+          },
+          "record_id": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Record Id",
+            "type": "string"
+          },
+          "label": {
+            "description": "Minimal distinguishing label, such as study date and body part.",
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "record_type",
+          "record_id",
+          "label"
+        ],
+        "title": "Candidate",
+        "type": "object"
+      },
+      "CaseIdentity": {
+        "additionalProperties": false,
+        "properties": {
+          "case_id": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Case Id",
+            "type": "string"
+          },
+          "patient_id": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Patient Id",
+            "type": "string"
+          },
+          "patient_display_name": {
+            "title": "Patient Display Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id",
+          "patient_id",
+          "patient_display_name"
+        ],
+        "title": "CaseIdentity",
+        "type": "object"
+      },
+      "ErrorResponse_Literal__open_case___": {
+        "additionalProperties": false,
+        "properties": {
+          "contract_version": {
+            "const": "1.0.0",
+            "title": "Contract Version",
+            "type": "string"
+          },
+          "status": {
+            "const": "error",
+            "title": "Status",
+            "type": "string"
+          },
+          "data": {
+            "title": "Data",
+            "type": "null"
+          },
+          "error": {
+            "$ref": "#/$defs/ToolError"
+          },
+          "warnings": {
+            "items": {
+              "$ref": "#/$defs/ToolWarning"
+            },
+            "maxItems": 0,
+            "title": "Warnings",
+            "type": "array"
+          },
+          "meta": {
+            "$ref": "#/$defs/ToolMetadata_Literal__open_case___"
+          }
+        },
+        "required": [
+          "contract_version",
+          "status",
+          "data",
+          "error",
+          "warnings",
+          "meta"
+        ],
+        "title": "ErrorResponse[Literal['open_case']]",
+        "type": "object"
+      },
+      "OpenCaseData": {
+        "additionalProperties": false,
+        "properties": {
+          "state": {
+            "enum": [
+              "selected",
+              "selection_required"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "selected_case": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/CaseIdentity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "candidates": {
+            "items": {
+              "$ref": "#/$defs/CaseIdentity"
+            },
+            "maxItems": 50,
+            "title": "Candidates",
+            "type": "array"
+          },
+          "has_more": {
+            "title": "Has More",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "state",
+          "selected_case",
+          "candidates",
+          "has_more"
+        ],
+        "title": "OpenCaseData",
+        "type": "object"
+      },
+      "SuccessResponse_OpenCaseData_Literal__open_case___": {
+        "additionalProperties": false,
+        "properties": {
+          "contract_version": {
+            "const": "1.0.0",
+            "title": "Contract Version",
+            "type": "string"
+          },
+          "status": {
+            "const": "ok",
+            "title": "Status",
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/$defs/OpenCaseData"
+          },
+          "error": {
+            "title": "Error",
+            "type": "null"
+          },
+          "warnings": {
+            "items": {
+              "$ref": "#/$defs/ToolWarning"
+            },
+            "title": "Warnings",
+            "type": "array"
+          },
+          "meta": {
+            "$ref": "#/$defs/ToolMetadata_Literal__open_case___"
+          }
+        },
+        "required": [
+          "contract_version",
+          "status",
+          "data",
+          "error",
+          "warnings",
+          "meta"
+        ],
+        "title": "SuccessResponse[OpenCaseData, Literal['open_case']]",
+        "type": "object"
+      },
+      "ToolError": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "enum": [
+              "INVALID_ARGUMENT",
+              "IDENTITY_UNRESOLVED",
+              "CASE_CONTEXT_MISMATCH",
+              "CASE_NOT_FOUND",
+              "RECORD_NOT_FOUND",
+              "RESULT_NOT_AVAILABLE",
+              "NOT_REVIEWED",
+              "AMBIGUOUS_RECORD",
+              "RECORD_CONFLICT",
+              "DOCUMENT_VERSION_NOT_FOUND",
+              "TIMEOUT",
+              "BACKEND_UNAVAILABLE",
+              "INTERNAL_ERROR"
+            ],
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "description": "Safe explanation; no stack traces, secrets or cross-case data.",
+            "title": "Message",
+            "type": "string"
+          },
+          "retryable": {
+            "description": "True only for transient failures.",
+            "title": "Retryable",
+            "type": "boolean"
+          },
+          "candidates": {
+            "description": "Same-case candidates for AMBIGUOUS_RECORD; otherwise empty.",
+            "items": {
+              "$ref": "#/$defs/Candidate"
+            },
+            "title": "Candidates",
+            "type": "array"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "retryable",
+          "candidates"
+        ],
+        "title": "ToolError",
+        "type": "object"
+      },
+      "ToolMetadata_Literal__open_case___": {
+        "additionalProperties": false,
+        "properties": {
+          "request_id": {
+            "format": "uuid",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "tool_name": {
+            "const": "open_case",
+            "title": "Tool Name",
+            "type": "string"
+          },
+          "retrieved_at": {
+            "format": "date-time",
+            "title": "Retrieved At",
+            "type": "string"
+          },
+          "duration_ms": {
+            "minimum": 0,
+            "title": "Duration Ms",
+            "type": "integer"
+          },
+          "case_context_version": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Case Context Version"
+          }
+        },
+        "required": [
+          "request_id",
+          "tool_name",
+          "retrieved_at",
+          "duration_ms",
+          "case_context_version"
+        ],
+        "title": "ToolMetadata[Literal['open_case']]",
+        "type": "object"
+      },
+      "ToolWarning": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "enum": [
+              "HISTORICAL_RECORD",
+              "INCOMPLETE_RECORD"
+            ],
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "evidence_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "evidence_ids"
+        ],
+        "title": "ToolWarning",
+        "type": "object"
+      }
+    },
+    "discriminator": {
+      "mapping": {
+        "error": "#/$defs/ErrorResponse_Literal__open_case___",
+        "ok": "#/$defs/SuccessResponse_OpenCaseData_Literal__open_case___"
+      },
+      "propertyName": "status"
+    },
+    "oneOf": [
+      {
+        "$ref": "#/$defs/SuccessResponse_OpenCaseData_Literal__open_case___"
+      },
+      {
+        "$ref": "#/$defs/ErrorResponse_Literal__open_case___"
+      }
+    ]
+  }
+}

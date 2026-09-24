@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "scope": "Inspected source and model revisions, not a complete GPU dependency/container lock",
+  "models": {
+    "nemotron": {
+      "runtime_repository": "https://github.com/NVIDIA/NeMo-Speech.cpp.git",
+      "runtime_commit": "07003daa7eefea542076310722ccaa89709ee3c3",
+      "model_repository": "nvidia/nemotron-3.5-asr-streaming-0.6b",
+      "model_revision": "1c8deaecc64b91f034d73e08dd8b64625eb3395d",
+      "artifact": "nemotron-3.5-asr-streaming-0.6b.q8_0.gguf",
+      "artifact_size_bytes": 741548352,
+      "artifact_sha256": "a5c435f294eea8f88ce68dd27b8c3bfea7f777cb2fbba04fcd30eaa555f429ae",
+      "artifact_url": "https://huggingface.co/nvidia/nemotron-3.5-asr-streaming-0.6b/resolve/1c8deaecc64b91f034d73e08dd8b64625eb3395d/nemotron-3.5-asr-streaming-0.6b.q8_0.gguf",
+      "artifact_evidence": "models/index.json in the pinned runtime",
+      "server_port": 8080
+    },
+    "breeze": {
+      "runtime_repository": "https://github.com/breezeblue-ai/breeze-tts.git",
+      "runtime_commit": "008f769016b0a24711becd7a4925030bc93f608c",
+      "model_repository": "BreezeBlue/Breeze-TTS-2",
+      "model_revision": "3e28c5151381a722f1d8661b4118c298caa77aa4",
+      "server_port": 7861,
+      "runtime_note": "Separate CUDA Python environment; eager mode is default, --fast-all is opt-in"
+    },
+    "hybrid_diffusion": {
+      "runtime_repository": "https://github.com/yuchen-zhu-zyc/HybridDiffusion.git",
+      "runtime_commit": "6ca547aebb72bfe897e80e0a683c776789e5f38c",
+      "model_repository": "yuchen-zhu-zyc/HybridDiffusion-2B",
+      "model_revision": "04e16a066c17a512f9a567b01362d6ab811bcf4b",
+      "server_port": 30000,
+      "runtime_note": "Upstream isolated Python 3.10 eval environment, bundled SGLang plus modified FlashInfer; not generic pip sglang"
+    }
+  }
+}

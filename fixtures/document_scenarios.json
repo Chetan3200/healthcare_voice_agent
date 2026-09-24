@@ -1,0 +1,306 @@
+{
+  "reference_time": "2026-09-17T09:00:00Z",
+  "scenarios": [
+    {
+      "id": "DOC01",
+      "description": "Select the current cast-care version rather than its historical predecessor.",
+      "record_refs": [
+        "DOC-CAST",
+        "DOC-CAST@1.0",
+        "DOC-CAST@2.0"
+      ],
+      "expected_behavior": "Eligible current evidence is DOC-CAST version 2.0; version 1.0 is historical and not current.",
+      "checks": [
+        {
+          "table": "document_versions",
+          "where": {
+            "document_id": "DOC-CAST",
+            "approval_status": "approved",
+            "publication_status": "published",
+            "is_current": true,
+            "published_at": {
+              "lt": "2026-09-17T09:00:00Z"
+            },
+            "effective_from": {
+              "lt": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 1
+        },
+        {
+          "table": "document_versions",
+          "where": {
+            "document_id": "DOC-CAST",
+            "version": "1.0",
+            "is_current": false
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "DOC02",
+      "description": "Retrieve routine visit-preparation logistics.",
+      "record_refs": [
+        "DOC-VISIT",
+        "DOC-VISIT@1.0"
+      ],
+      "expected_behavior": "Return the approved, published, current visit-preparation material.",
+      "checks": [
+        {
+          "table": "document_versions",
+          "where": {
+            "document_id": "DOC-VISIT",
+            "approval_status": "approved",
+            "publication_status": "published",
+            "is_current": true,
+            "published_at": {
+              "lt": "2026-09-17T09:00:00Z"
+            },
+            "effective_from": {
+              "lt": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "DOC03",
+      "description": "Retrieve fictional clinic hours or contact details.",
+      "record_refs": [
+        "DOC-HOURS",
+        "DOC-HOURS@1.0"
+      ],
+      "expected_behavior": "Return the approved, published, current synthetic hours/contact material and preserve its fictional label.",
+      "checks": [
+        {
+          "table": "document_versions",
+          "where": {
+            "document_id": "DOC-HOURS",
+            "approval_status": "approved",
+            "publication_status": "published",
+            "is_current": true,
+            "published_at": {
+              "lt": "2026-09-17T09:00:00Z"
+            },
+            "effective_from": {
+              "lt": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "DOC04",
+      "description": "Test an expired-only family.",
+      "record_refs": [
+        "DOC-EXPIRED",
+        "DOC-EXPIRED@1.0"
+      ],
+      "expected_behavior": "Do not treat this version as currently effective at the reference time because its effective_to has passed.",
+      "checks": [
+        {
+          "table": "document_versions",
+          "where": {
+            "document_id": "DOC-EXPIRED",
+            "effective_to": {
+              "lt": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 1
+        },
+        {
+          "table": "document_versions",
+          "where": {
+            "document_id": "DOC-EXPIRED",
+            "approval_status": "approved",
+            "publication_status": "published",
+            "is_current": true,
+            "published_at": {
+              "lt": "2026-09-17T09:00:00Z"
+            },
+            "effective_from": {
+              "lt": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "DOC05",
+      "description": "Test a draft-only family.",
+      "record_refs": [
+        "DOC-DRAFT",
+        "DOC-DRAFT@0.1"
+      ],
+      "expected_behavior": "Do not return as published/current evidence; it is draft approval and draft publication status.",
+      "checks": [
+        {
+          "table": "document_versions",
+          "where": {
+            "document_id": "DOC-DRAFT",
+            "approval_status": "draft",
+            "publication_status": "draft"
+          },
+          "count": 1
+        },
+        {
+          "table": "document_versions",
+          "where": {
+            "document_id": "DOC-DRAFT",
+            "approval_status": "approved",
+            "publication_status": "published",
+            "is_current": true,
+            "published_at": {
+              "lt": "2026-09-17T09:00:00Z"
+            },
+            "effective_from": {
+              "lt": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "DOC06",
+      "description": "Test a withdrawn-only family.",
+      "record_refs": [
+        "DOC-WITHDRAWN",
+        "DOC-WITHDRAWN@1.0"
+      ],
+      "expected_behavior": "Do not return as active evidence because the publication status is withdrawn.",
+      "checks": [
+        {
+          "table": "document_versions",
+          "where": {
+            "document_id": "DOC-WITHDRAWN",
+            "publication_status": "withdrawn"
+          },
+          "count": 1
+        },
+        {
+          "table": "document_versions",
+          "where": {
+            "document_id": "DOC-WITHDRAWN",
+            "approval_status": "approved",
+            "publication_status": "published",
+            "is_current": true,
+            "published_at": {
+              "lt": "2026-09-17T09:00:00Z"
+            },
+            "effective_from": {
+              "lt": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "DOC07",
+      "description": "Test a published future-effective document.",
+      "record_refs": [
+        "DOC-FUTURE",
+        "DOC-FUTURE@1.0"
+      ],
+      "expected_behavior": "Recognize it is current in the family but not yet effective at the reference time of 2026-09-17T09:00:00Z.",
+      "checks": [
+        {
+          "table": "document_versions",
+          "where": {
+            "document_id": "DOC-FUTURE",
+            "is_current": true,
+            "effective_from": {
+              "gte": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 1
+        },
+        {
+          "table": "document_versions",
+          "where": {
+            "document_id": "DOC-FUTURE",
+            "approval_status": "approved",
+            "publication_status": "published",
+            "is_current": true,
+            "published_at": {
+              "lt": "2026-09-17T09:00:00Z"
+            },
+            "effective_from": {
+              "lt": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "DOC08",
+      "description": "Test conflicting current arrival-time guidance for the same synthetic appointment context.",
+      "record_refs": [
+        "DOC-ARRIVAL-A",
+        "DOC-ARRIVAL-A@1.0",
+        "DOC-ARRIVAL-B",
+        "DOC-ARRIVAL-B@1.0"
+      ],
+      "expected_behavior": "Surface the conflict: Arrival Guidance A says 15 minutes and B says 30 minutes; do not silently choose one.",
+      "checks": [
+        {
+          "table": "document_versions",
+          "where": {
+            "document_id": {
+              "in": [
+                "DOC-ARRIVAL-A",
+                "DOC-ARRIVAL-B"
+              ]
+            },
+            "approval_status": "approved",
+            "publication_status": "published",
+            "is_current": true,
+            "effective_from": {
+              "lt": "2026-09-17T09:00:00Z"
+            }
+          },
+          "count": 2
+        }
+      ]
+    },
+    {
+      "id": "DOC09",
+      "description": "Test an unknown requested version.",
+      "record_refs": [
+        "DOC-VISIT@9.9"
+      ],
+      "expected_behavior": "Report that the requested document version is not present in the fixture evidence.",
+      "checks": [
+        {
+          "table": "document_versions",
+          "where": {
+            "document_id": "DOC-VISIT",
+            "version": "9.9"
+          },
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "DOC10",
+      "description": "Missing-topic request: anaesthesia dosing is not provided by this synthetic logistics/basic-cast-care corpus.",
+      "record_refs": [],
+      "expected_behavior": "Do not invent anaesthesia guidance. The absent document-family check is a data-boundary check, not proof of semantic retrieval performance; no vector search has been run.",
+      "checks": [
+        {
+          "table": "clinic_documents",
+          "where": {
+            "document_id": "DOC-ANAESTHESIA"
+          },
+          "count": 0
+        }
+      ]
+    }
+  ]
+}

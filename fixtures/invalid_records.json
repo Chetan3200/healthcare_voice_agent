@@ -1,0 +1,275 @@
+{
+  "dataset_version": "synthetic-clinic-v1",
+  "reference_time": "2026-09-17T09:00:00Z",
+  "notice": "Intentionally invalid insert candidates. Never loaded by --apply. Each candidate clones a valid row and applies its patch. The optional database rejection check must roll back every attempt, even unexpected success.",
+  "cases": [
+    {
+      "id": "INVALID01",
+      "description": "Study references a nonexistent case",
+      "table": "studies",
+      "base_key": {
+        "study_id": "ST-1042-01"
+      },
+      "patch": {
+        "study_id": "BAD-ST-ORPHAN",
+        "case_id": "9999"
+      },
+      "expected_sqlstate": "23503"
+    },
+    {
+      "id": "INVALID02",
+      "description": "Model result references a nonexistent study",
+      "table": "model_results",
+      "base_key": {
+        "model_result_id": "MR-1042-01-V1"
+      },
+      "patch": {
+        "model_result_id": "BAD-MR-ORPHAN",
+        "study_id": "ST-MISSING",
+        "is_current": false
+      },
+      "expected_sqlstate": "23503"
+    },
+    {
+      "id": "INVALID03",
+      "description": "Reviewed report references a nonexistent study",
+      "table": "reviewed_reports",
+      "base_key": {
+        "report_id": "RR-1042-01-V1"
+      },
+      "patch": {
+        "report_id": "BAD-RR-ORPHAN",
+        "study_id": "ST-MISSING",
+        "record_version": 99,
+        "is_current": false
+      },
+      "expected_sqlstate": "23503"
+    },
+    {
+      "id": "INVALID04",
+      "description": "Report supersedes a report from another study",
+      "table": "reviewed_reports",
+      "base_key": {
+        "report_id": "RR-1042-01-V1"
+      },
+      "patch": {
+        "report_id": "BAD-RR-CROSS-STUDY",
+        "record_version": 2,
+        "is_current": false,
+        "supersedes_report_id": "RR-1043-01-V1"
+      },
+      "expected_sqlstate": "23503"
+    },
+    {
+      "id": "INVALID05",
+      "description": "Appointment replaces a booking from another case",
+      "table": "appointments",
+      "base_key": {
+        "appointment_id": "AP-1042-01"
+      },
+      "patch": {
+        "appointment_id": "BAD-AP-CROSS-CASE",
+        "replaces_appointment_id": "AP-1043-01"
+      },
+      "expected_sqlstate": "23503"
+    },
+    {
+      "id": "INVALID06",
+      "description": "Two model results are marked current for one study",
+      "table": "model_results",
+      "base_key": {
+        "model_result_id": "MR-1042-01-V1"
+      },
+      "patch": {
+        "model_result_id": "BAD-MR-DUP-CURRENT"
+      },
+      "expected_sqlstate": "23505"
+    },
+    {
+      "id": "INVALID07",
+      "description": "Two reviewed reports are marked current for one study",
+      "table": "reviewed_reports",
+      "base_key": {
+        "report_id": "RR-1042-01-V1"
+      },
+      "patch": {
+        "report_id": "BAD-RR-DUP-CURRENT",
+        "record_version": 2
+      },
+      "expected_sqlstate": "23505"
+    },
+    {
+      "id": "INVALID08",
+      "description": "Two versions are marked current for one document",
+      "table": "document_versions",
+      "base_key": {
+        "document_id": "DOC-CAST",
+        "version": "2.0"
+      },
+      "patch": {
+        "version": "99.0"
+      },
+      "expected_sqlstate": "23505"
+    },
+    {
+      "id": "INVALID09",
+      "description": "A required study body part is null",
+      "table": "studies",
+      "base_key": {
+        "study_id": "ST-1042-01"
+      },
+      "patch": {
+        "study_id": "BAD-ST-NULL-BODY",
+        "body_part": null
+      },
+      "expected_sqlstate": "23502"
+    },
+    {
+      "id": "INVALID10",
+      "description": "Unsupported study modality",
+      "table": "studies",
+      "base_key": {
+        "study_id": "ST-1042-01"
+      },
+      "patch": {
+        "study_id": "BAD-ST-MODALITY",
+        "modality": "UNSUPPORTED"
+      },
+      "expected_sqlstate": "23514"
+    },
+    {
+      "id": "INVALID11",
+      "description": "Confidence exceeds the permitted normalized range",
+      "table": "model_findings",
+      "base_key": {
+        "model_result_id": "MR-1042-01-V1",
+        "finding_index": 0
+      },
+      "patch": {
+        "finding_index": 99,
+        "confidence": 1.2
+      },
+      "expected_sqlstate": "23514"
+    },
+    {
+      "id": "INVALID12",
+      "description": "Appointment end precedes its start",
+      "table": "appointments",
+      "base_key": {
+        "appointment_id": "AP-1042-01"
+      },
+      "patch": {
+        "appointment_id": "BAD-AP-TIME",
+        "ends_at": "2026-09-24T09:00:00+05:30"
+      },
+      "expected_sqlstate": "23514"
+    },
+    {
+      "id": "INVALID13",
+      "description": "Invalid appointment timezone name",
+      "table": "appointments",
+      "base_key": {
+        "appointment_id": "AP-1042-01"
+      },
+      "patch": {
+        "appointment_id": "BAD-AP-TIMEZONE",
+        "timezone": "Moon/Imaginary"
+      },
+      "expected_sqlstate": "23514"
+    },
+    {
+      "id": "INVALID14",
+      "description": "Instruction chunk points to a nonexistent document version",
+      "table": "document_chunks",
+      "base_key": {
+        "chunk_id": "DOC-CAST-1.0-C0"
+      },
+      "patch": {
+        "chunk_id": "BAD-CHUNK-VERSION",
+        "document_version": "99.1"
+      },
+      "expected_sqlstate": "23503"
+    },
+    {
+      "id": "INVALID15",
+      "description": "Reviewed report has no reviewing clinician",
+      "table": "reviewed_reports",
+      "base_key": {
+        "report_id": "RR-1042-01-V1"
+      },
+      "patch": {
+        "report_id": "BAD-RR-NO-REVIEWER",
+        "record_version": 2,
+        "is_current": false,
+        "reviewed_by_clinician_id": null
+      },
+      "expected_sqlstate": "23514"
+    },
+    {
+      "id": "INVALID16",
+      "description": "Completed model result has no generation timestamp",
+      "table": "model_results",
+      "base_key": {
+        "model_result_id": "MR-1042-01-V1"
+      },
+      "patch": {
+        "model_result_id": "BAD-MR-NO-TIME",
+        "is_current": false,
+        "generated_at": null
+      },
+      "expected_sqlstate": "23514"
+    },
+    {
+      "id": "INVALID17",
+      "description": "Patient login role is disallowed in this clinician/staff-only app",
+      "table": "app_users",
+      "base_key": {
+        "user_id": "SYN-USER-CLIN"
+      },
+      "patch": {
+        "user_id": "BAD-USER-PATIENT",
+        "role": "patient"
+      },
+      "expected_sqlstate": "23514"
+    },
+    {
+      "id": "INVALID18",
+      "description": "Published document has not been approved",
+      "table": "document_versions",
+      "base_key": {
+        "document_id": "DOC-CAST",
+        "version": "2.0"
+      },
+      "patch": {
+        "version": "99.2",
+        "approval_status": "draft",
+        "is_current": false
+      },
+      "expected_sqlstate": "23514"
+    },
+    {
+      "id": "INVALID19",
+      "description": "A study has a null primary identifier",
+      "table": "studies",
+      "base_key": {
+        "study_id": "ST-1042-01"
+      },
+      "patch": {
+        "study_id": null
+      },
+      "expected_sqlstate": "23502"
+    },
+    {
+      "id": "INVALID20",
+      "description": "Identifier is longer than 64 characters",
+      "table": "studies",
+      "base_key": {
+        "study_id": "ST-1042-01"
+      },
+      "patch": {
+        "study_id": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+      },
+      "expected_sqlstate": "23514"
+    }
+  ]
+}

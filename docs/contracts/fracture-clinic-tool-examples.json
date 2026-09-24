@@ -1,0 +1,456 @@
+{
+  "contract_version": "1.0.0",
+  "notice": "All records, identifiers, clinician names, model outputs, scores and timings are synthetic. These ten examples are schema/behaviour illustrations, not a runnable implementation or the required 50-scenario evaluation suite.",
+  "server_context": {
+    "confirmed_case_id": "1042",
+    "case_context_version": 1,
+    "fixed_clock": "2026-09-16T09:00:00Z"
+  },
+  "examples": [
+    {
+      "example_id": "study_success",
+      "tool": "get_study",
+      "arguments": {
+        "case_id": "1042",
+        "study_id": null
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000001",
+          "tool_name": "get_study",
+          "retrieved_at": "2026-09-16T09:00:00Z",
+          "duration_ms": 20,
+          "case_context_version": 1
+        },
+        "status": "ok",
+        "data": {
+          "case_id": "1042",
+          "patient_id": "SYN-PAT-001",
+          "study_id": "ST-1042-01",
+          "performed_at": "2026-09-10T08:15:00Z",
+          "modality": "XR",
+          "body_part": "wrist",
+          "laterality": "left",
+          "views": [
+            "AP",
+            "lateral"
+          ],
+          "acquisition_status": "completed",
+          "image_ref": null,
+          "source": {
+            "evidence_id": "study:ST-1042-01@1",
+            "source_type": "study",
+            "record_id": "ST-1042-01",
+            "version": "1",
+            "updated_at": "2026-09-10T08:15:00Z"
+          },
+          "current_model_result": {
+            "model_result_id": "MR-1042-01-V1",
+            "model_version": "1.0.0",
+            "record_version": 1,
+            "inference_status": "completed",
+            "record_status": "active",
+            "is_current": true
+          },
+          "model_results": [
+            {
+              "model_result_id": "MR-1042-01-V1",
+              "model_version": "1.0.0",
+              "record_version": 1,
+              "is_current": true
+            }
+          ]
+        },
+        "error": null,
+        "warnings": []
+      }
+    },
+    {
+      "example_id": "model_success",
+      "tool": "get_model_result",
+      "arguments": {
+        "case_id": "1042",
+        "study_id": "ST-1042-01",
+        "model_result_id": null
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000002",
+          "tool_name": "get_model_result",
+          "retrieved_at": "2026-09-16T09:00:00Z",
+          "duration_ms": 20,
+          "case_context_version": 1
+        },
+        "status": "ok",
+        "data": {
+          "case_id": "1042",
+          "patient_id": "SYN-PAT-001",
+          "study_id": "ST-1042-01",
+          "model_result_id": "MR-1042-01",
+          "model_name": "synthetic-fixture-model",
+          "model_version": "1.0.0",
+          "generated_at": "2026-09-10T08:16:00Z",
+          "is_current": true,
+          "review_status": "unreviewed",
+          "findings": [
+            {
+              "label": "distal radius fracture",
+              "assessment": "suspected",
+              "confidence": 0.82
+            }
+          ],
+          "summary": "Possible distal radius fracture.",
+          "score_description": "Synthetic normalized score for the stored finding. No actual model was run, and this is not calibrated clinical certainty.",
+          "limitations": [
+            "Fabricated result for software evaluation; not an actual imaging-model output."
+          ],
+          "source": {
+            "evidence_id": "model_prediction:MR-1042-01@1",
+            "source_type": "model_prediction",
+            "record_id": "MR-1042-01",
+            "version": "1",
+            "updated_at": "2026-09-10T08:16:00Z"
+          }
+        },
+        "error": null,
+        "warnings": []
+      }
+    },
+    {
+      "example_id": "reviewed_report_success",
+      "tool": "get_reviewed_report",
+      "arguments": {
+        "case_id": "1042",
+        "study_id": "ST-1042-01",
+        "report_id": null
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000003",
+          "tool_name": "get_reviewed_report",
+          "retrieved_at": "2026-09-16T09:00:00Z",
+          "duration_ms": 20,
+          "case_context_version": 1
+        },
+        "status": "ok",
+        "data": {
+          "case_id": "1042",
+          "patient_id": "SYN-PAT-001",
+          "study_id": "ST-1042-01",
+          "report_id": "RR-1042-01-V1",
+          "review_status": "reviewed",
+          "is_current": true,
+          "reviewed_by": {
+            "clinician_id": "SYN-CLIN-01",
+            "display_name": "Dr Mira Desai"
+          },
+          "reviewed_at": "2026-09-10T10:20:00Z",
+          "findings_text": "Nondisplaced fracture of the left distal radius.",
+          "impression_text": "Nondisplaced left distal radius fracture.",
+          "follow_up_recommendation": "Fracture-clinic review in two weeks.",
+          "supersedes_report_id": null,
+          "source": {
+            "evidence_id": "reviewed_report:RR-1042-01-V1@1",
+            "source_type": "reviewed_report",
+            "record_id": "RR-1042-01-V1",
+            "version": "1",
+            "updated_at": "2026-09-10T10:20:00Z"
+          }
+        },
+        "error": null,
+        "warnings": []
+      }
+    },
+    {
+      "example_id": "booked_follow_up_success",
+      "tool": "get_appointments",
+      "arguments": {
+        "case_id": "1042",
+        "time_scope": "upcoming",
+        "appointment_type": "fracture_follow_up",
+        "statuses": [
+          "scheduled",
+          "confirmed"
+        ]
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000004",
+          "tool_name": "get_appointments",
+          "retrieved_at": "2026-09-16T09:00:00Z",
+          "duration_ms": 20,
+          "case_context_version": 1
+        },
+        "status": "ok",
+        "data": {
+          "case_id": "1042",
+          "patient_id": "SYN-PAT-001",
+          "as_of": "2026-09-16T09:00:00Z",
+          "appointments": [
+            {
+              "appointment_id": "AP-1042-01",
+              "appointment_type": "fracture_follow_up",
+              "starts_at": "2026-09-24T10:30:00+05:30",
+              "ends_at": "2026-09-24T10:50:00+05:30",
+              "timezone": "Asia/Kolkata",
+              "status": "scheduled",
+              "clinician": {
+                "clinician_id": "SYN-CLIN-01",
+                "display_name": "Dr Mira Desai"
+              },
+              "location": "Synthetic Fracture Clinic, Room 2",
+              "notes": null,
+              "replaces_appointment_id": null,
+              "source": {
+                "evidence_id": "appointment:AP-1042-01@1",
+                "source_type": "appointment",
+                "record_id": "AP-1042-01",
+                "version": "1",
+                "updated_at": "2026-09-10T10:30:00Z"
+              }
+            }
+          ]
+        },
+        "error": null,
+        "warnings": []
+      }
+    },
+    {
+      "example_id": "instruction_search_success",
+      "tool": "search_clinic_instructions",
+      "arguments": {
+        "query": "general fracture clinic guidance",
+        "top_k": 1,
+        "document_id": null,
+        "version": null
+      },
+      "expected_response": {
+        "contract_version": "2.0.0",
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000005",
+          "tool_name": "search_clinic_instructions",
+          "retrieved_at": "2026-09-16T09:00:00Z",
+          "duration_ms": 20,
+          "case_context_version": null
+        },
+        "status": "ok",
+        "data": {
+          "query": "general fracture clinic guidance",
+          "version_scope": "web_unversioned",
+          "provider": "exa",
+          "matches": [
+            {
+              "document_id": "https://guidance.example.org/synthetic-example",
+              "url": "https://guidance.example.org/synthetic-example",
+              "title": "Synthetic schema example, not a real source",
+              "published_at": null,
+              "document_version": null,
+              "approval_status": "not_verified",
+              "rank": 1,
+              "passages": [
+                "Synthetic external-source excerpt for schema validation only."
+              ]
+            }
+          ],
+          "as_of": "2026-09-16T09:00:00Z"
+        },
+        "error": null,
+        "warnings": [
+          {
+            "code": "EXTERNAL_GUIDANCE",
+            "message": "External web guidance, not verified clinic-approved policy; web document versions are unavailable.",
+            "evidence_ids": []
+          }
+        ]
+      }
+    },
+    {
+      "example_id": "no_matching_appointments",
+      "fixture_override": "No active upcoming fracture follow-up appointments for case 1042.",
+      "tool": "get_appointments",
+      "arguments": {
+        "case_id": "1042",
+        "time_scope": "upcoming",
+        "appointment_type": "fracture_follow_up",
+        "statuses": [
+          "scheduled",
+          "confirmed"
+        ]
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000006",
+          "tool_name": "get_appointments",
+          "retrieved_at": "2026-09-16T09:00:00Z",
+          "duration_ms": 20,
+          "case_context_version": 1
+        },
+        "status": "ok",
+        "data": {
+          "case_id": "1042",
+          "patient_id": "SYN-PAT-001",
+          "as_of": "2026-09-16T09:00:00Z",
+          "appointments": []
+        },
+        "error": null,
+        "warnings": []
+      }
+    },
+    {
+      "example_id": "ambiguous_study",
+      "fixture_override": "Case 1042 contains two studies.",
+      "tool": "get_study",
+      "arguments": {
+        "case_id": "1042",
+        "study_id": null
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000007",
+          "tool_name": "get_study",
+          "retrieved_at": "2026-09-16T09:00:00Z",
+          "duration_ms": 20,
+          "case_context_version": 1
+        },
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "AMBIGUOUS_RECORD",
+          "message": "This case contains more than one study. Ask which study the user means.",
+          "retryable": false,
+          "candidates": [
+            {
+              "record_type": "study",
+              "record_id": "ST-1042-01",
+              "label": "Left wrist X-ray, 10 September 2026"
+            },
+            {
+              "record_type": "study",
+              "record_id": "ST-1042-02",
+              "label": "Left wrist X-ray, 15 September 2026"
+            }
+          ]
+        },
+        "warnings": []
+      }
+    },
+    {
+      "example_id": "report_not_yet_reviewed",
+      "fixture_override": "Only a draft exists for this study.",
+      "tool": "get_reviewed_report",
+      "arguments": {
+        "case_id": "1042",
+        "study_id": "ST-1042-01",
+        "report_id": null
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000008",
+          "tool_name": "get_reviewed_report",
+          "retrieved_at": "2026-09-16T09:00:00Z",
+          "duration_ms": 20,
+          "case_context_version": 1
+        },
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "NOT_REVIEWED",
+          "message": "No clinician-reviewed report is available for this study.",
+          "retryable": false,
+          "candidates": []
+        },
+        "warnings": []
+      }
+    },
+    {
+      "example_id": "appointment_timeout",
+      "fixture_override": "Inject an appointment backend timeout.",
+      "tool": "get_appointments",
+      "arguments": {
+        "case_id": "1042",
+        "time_scope": "upcoming",
+        "appointment_type": "fracture_follow_up",
+        "statuses": [
+          "scheduled",
+          "confirmed"
+        ]
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000009",
+          "tool_name": "get_appointments",
+          "retrieved_at": "2026-09-16T09:00:00Z",
+          "duration_ms": 20,
+          "case_context_version": 1
+        },
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "TIMEOUT",
+          "message": "Appointment retrieval timed out.",
+          "retryable": true,
+          "candidates": []
+        },
+        "warnings": []
+      }
+    },
+    {
+      "example_id": "no_instruction_evidence",
+      "fixture_override": "No eligible document passage supports this question.",
+      "tool": "search_clinic_instructions",
+      "arguments": {
+        "query": "general fracture clinic guidance",
+        "top_k": 1,
+        "document_id": null,
+        "version": null
+      },
+      "expected_response": {
+        "contract_version": "2.0.0",
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000010",
+          "tool_name": "search_clinic_instructions",
+          "retrieved_at": "2026-09-16T09:00:00Z",
+          "duration_ms": 20,
+          "case_context_version": null
+        },
+        "status": "ok",
+        "data": {
+          "query": "general fracture clinic guidance",
+          "version_scope": "web_unversioned",
+          "provider": "exa",
+          "matches": [
+            {
+              "document_id": "https://guidance.example.org/synthetic-example",
+              "url": "https://guidance.example.org/synthetic-example",
+              "title": "Synthetic schema example, not a real source",
+              "published_at": null,
+              "document_version": null,
+              "approval_status": "not_verified",
+              "rank": 1,
+              "passages": [
+                "Synthetic external-source excerpt for schema validation only."
+              ]
+            }
+          ],
+          "as_of": "2026-09-16T09:00:00Z"
+        },
+        "error": null,
+        "warnings": [
+          {
+            "code": "EXTERNAL_GUIDANCE",
+            "message": "External web guidance, not verified clinic-approved policy; web document versions are unavailable.",
+            "evidence_ids": []
+          }
+        ]
+      }
+    }
+  ]
+}

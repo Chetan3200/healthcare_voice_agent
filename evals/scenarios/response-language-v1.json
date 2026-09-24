@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "suite_id": "response-language-v1",
+  "purpose": "Fixed manual response-language checks. Expected labels are specifications, not measured model results.",
+  "session_rule": "Start a fresh connection for each case. Keep all turns of one case in that same connection. Check the response after every turn.",
+  "scope": "Response language only. Do not score TTS naturalness, latency, factual answers, or ASR accuracy with these labels. Inspect the committed transcript to distinguish ASR errors from language-selection errors.",
+  "cases": [
+    {
+      "id": "english_with_hindi_script_name",
+      "turns": [
+        {"user": "Hi, can you tell me more about बैंगलोर", "expected_response_language": "en"}
+      ],
+      "check": "The place-name script must not switch an otherwise English answer to Hindi."
+    },
+    {
+      "id": "english_with_noisy_hindi_script_prefix",
+      "turns": [
+        {"user": "स्टैंडर्ड tell me more about Burj Khalifa.", "expected_response_language": "en"}
+      ],
+      "check": "An isolated transcript prefix must not outweigh the meaning and grammar of the English question."
+    },
+    {
+      "id": "hindi_question",
+      "turns": [
+        {"user": "मुंबई के बारे में बताओ।", "expected_response_language": "hi"}
+      ],
+      "check": "A clear Hindi question should receive Hindi without requiring a separate language instruction."
+    },
+    {
+      "id": "mixed_hindi_english_question",
+      "turns": [
+        {"user": "Mumbai की population कितनी है?", "expected_response_language": "hinglish"}
+      ],
+      "check": "Keep a conversational Hindi-English mix instead of translating every English term into formal Hindi."
+    },
+    {
+      "id": "explicit_english_persists",
+      "turns": [
+        {"user": "Please answer in English only.", "expected_response_language": "en"},
+        {"user": "मुंबई के बारे में बताओ।", "expected_response_language": "en"}
+      ],
+      "check": "The explicit English preference outranks the language of the later question."
+    },
+    {
+      "id": "explicit_hindi_persists",
+      "turns": [
+        {"user": "कृपया केवल हिंदी में जवाब दो।", "expected_response_language": "hi"},
+        {"user": "Tell me about Bangalore.", "expected_response_language": "hi"}
+      ],
+      "check": "The explicit Hindi preference outranks a later English question."
+    },
+    {
+      "id": "explicit_hinglish_persists",
+      "turns": [
+        {"user": "Please use Hinglish for this conversation.", "expected_response_language": "hinglish"},
+        {"user": "Tell me about Mumbai.", "expected_response_language": "hinglish"}
+      ],
+      "check": "A requested mixed-language style should not silently become English-only or formal Hindi."
+    },
+    {
+      "id": "explicit_preference_can_change",
+      "turns": [
+        {"user": "Answer in English only.", "expected_response_language": "en"},
+        {"user": "अब से हिंदी में जवाब दो। मुंबई के बारे में बताओ।", "expected_response_language": "hi"},
+        {"user": "What about Bangalore?", "expected_response_language": "hi"}
+      ],
+      "check": "A newer explicit preference replaces the older one and remains active."
+    },
+    {
+      "id": "automatic_choice_follows_clear_changes",
+      "turns": [
+        {"user": "Tell me about Bangalore.", "expected_response_language": "en"},
+        {"user": "अब मुंबई के बारे में बताओ।", "expected_response_language": "hi"},
+        {"user": "Tell me about दिल्ली next.", "expected_response_language": "en"}
+      ],
+      "check": "Without an explicit preference, clear changes in the user's language are allowed; the assistant's previous language must not lock the session."
+    },
+    {
+      "id": "quoted_instruction_is_not_a_preference",
+      "turns": [
+        {"user": "Explain what the phrase 'Hindi only' means.", "expected_response_language": "en"}
+      ],
+      "check": "Mentioning or quoting a language preference as content must not set that preference."
+    }
+  ]
+}

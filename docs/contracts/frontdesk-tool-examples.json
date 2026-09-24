@@ -1,0 +1,439 @@
+{
+  "contract_version": "1.0.0",
+  "notice": "Synthetic schema illustrations only, not proof of live database or conversation-controller behavior. Each example is an independent branch unless stated otherwise.",
+  "server_context": {
+    "confirmed_case_id": "1042",
+    "case_context_version": 1,
+    "clinic_timezone": "Asia/Kolkata"
+  },
+  "examples": [
+    {
+      "example_id": "available_slots",
+      "tool": "find_available_slots",
+      "arguments": {
+        "appointment_type": "fracture_follow_up",
+        "start_date": "2026-10-01",
+        "end_date": "2026-10-03",
+        "earliest_start_time": "09:00",
+        "latest_start_time": "16:00",
+        "clinician_id": null,
+        "max_results": 3
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "status": "ok",
+        "data": {
+          "slots": [
+            {
+              "slot_id": "00000000-0000-4000-8000-000000000101",
+              "appointment_type": "fracture_follow_up",
+              "starts_at": "2026-10-01T09:00:00+05:30",
+              "ends_at": "2026-10-01T09:30:00+05:30",
+              "timezone": "Asia/Kolkata",
+              "clinician": {
+                "clinician_id": "CLIN-SYN-01",
+                "display_name": "Dr Synthetic Asha"
+              },
+              "location": "Synthetic Clinic, Room 1"
+            }
+          ],
+          "as_of": "2026-09-30T10:00:00Z",
+          "has_more": false
+        },
+        "error": null,
+        "warnings": [],
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000001",
+          "tool_name": "find_available_slots",
+          "retrieved_at": "2026-09-30T10:00:00Z",
+          "duration_ms": 10,
+          "case_context_version": null
+        }
+      }
+    },
+    {
+      "example_id": "empty_search_is_success",
+      "tool": "find_available_slots",
+      "arguments": {
+        "appointment_type": "fracture_follow_up",
+        "start_date": "2026-10-03",
+        "end_date": "2026-10-03",
+        "earliest_start_time": "09:00",
+        "latest_start_time": "16:00",
+        "clinician_id": null,
+        "max_results": 3
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "status": "ok",
+        "data": {
+          "slots": [],
+          "as_of": "2026-09-30T10:00:00Z",
+          "has_more": false
+        },
+        "error": null,
+        "warnings": [],
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000002",
+          "tool_name": "find_available_slots",
+          "retrieved_at": "2026-09-30T10:00:00Z",
+          "duration_ms": 10,
+          "case_context_version": null
+        }
+      }
+    },
+    {
+      "example_id": "prepared_not_booked",
+      "tool": "prepare_booking",
+      "arguments": {
+        "case_id": "1042",
+        "slot_id": "00000000-0000-4000-8000-000000000101"
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "status": "ok",
+        "data": {
+          "draft_id": "00000000-0000-4000-8000-000000000201",
+          "booking_request_id": "00000000-0000-4000-8000-000000000301",
+          "hold_expires_at": "2026-09-30T10:02:00Z",
+          "case_id": "1042",
+          "patient_display_name": "Synthetic Patient One",
+          "slot": {
+            "slot_id": "00000000-0000-4000-8000-000000000101",
+            "appointment_type": "fracture_follow_up",
+            "starts_at": "2026-10-01T09:00:00+05:30",
+            "ends_at": "2026-10-01T09:30:00+05:30",
+            "timezone": "Asia/Kolkata",
+            "clinician": {
+              "clinician_id": "CLIN-SYN-01",
+              "display_name": "Dr Synthetic Asha"
+            },
+            "location": "Synthetic Clinic, Room 1"
+          }
+        },
+        "error": null,
+        "warnings": [],
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000003",
+          "tool_name": "prepare_booking",
+          "retrieved_at": "2026-09-30T10:00:00Z",
+          "duration_ms": 10,
+          "case_context_version": 1
+        }
+      }
+    },
+    {
+      "example_id": "confirmed_booking",
+      "tool": "book_appointment",
+      "arguments": {
+        "case_id": "1042",
+        "draft_id": "00000000-0000-4000-8000-000000000201"
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "status": "ok",
+        "data": {
+          "booking_request_id": "00000000-0000-4000-8000-000000000301",
+          "appointment": {
+            "appointment_id": "AP-SYN-001",
+            "case_id": "1042",
+            "patient_display_name": "Synthetic Patient One",
+            "slot_id": "00000000-0000-4000-8000-000000000101",
+            "appointment_type": "fracture_follow_up",
+            "starts_at": "2026-10-01T09:00:00+05:30",
+            "ends_at": "2026-10-01T09:30:00+05:30",
+            "timezone": "Asia/Kolkata",
+            "clinician": {
+              "clinician_id": "CLIN-SYN-01",
+              "display_name": "Dr Synthetic Asha"
+            },
+            "location": "Synthetic Clinic, Room 1",
+            "status": "confirmed"
+          }
+        },
+        "error": null,
+        "warnings": [],
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000004",
+          "tool_name": "book_appointment",
+          "retrieved_at": "2026-09-30T10:00:00Z",
+          "duration_ms": 10,
+          "case_context_version": 1
+        }
+      }
+    },
+    {
+      "example_id": "pending_lookup_not_booking_success",
+      "tool": "get_booking_status",
+      "arguments": {
+        "case_id": "1042",
+        "booking_request_id": "00000000-0000-4000-8000-000000000301"
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "status": "ok",
+        "data": {
+          "booking_request_id": "00000000-0000-4000-8000-000000000301",
+          "draft_id": "00000000-0000-4000-8000-000000000201",
+          "as_of": "2026-09-30T10:01:00Z",
+          "hold_expires_at": "2026-09-30T10:02:00Z",
+          "booking_state": "pending",
+          "appointment": null,
+          "failure": null
+        },
+        "error": null,
+        "warnings": [],
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000005",
+          "tool_name": "get_booking_status",
+          "retrieved_at": "2026-09-30T10:01:00Z",
+          "duration_ms": 10,
+          "case_context_version": 1
+        }
+      }
+    },
+    {
+      "example_id": "booked_after_old_hold_expiry",
+      "tool": "get_booking_status",
+      "arguments": {
+        "case_id": "1042",
+        "booking_request_id": "00000000-0000-4000-8000-000000000301"
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "status": "ok",
+        "data": {
+          "booking_request_id": "00000000-0000-4000-8000-000000000301",
+          "draft_id": "00000000-0000-4000-8000-000000000201",
+          "as_of": "2026-09-30T11:00:00Z",
+          "hold_expires_at": "2026-09-30T10:02:00Z",
+          "booking_state": "booked",
+          "appointment": {
+            "appointment_id": "AP-SYN-001",
+            "case_id": "1042",
+            "patient_display_name": "Synthetic Patient One",
+            "slot_id": "00000000-0000-4000-8000-000000000101",
+            "appointment_type": "fracture_follow_up",
+            "starts_at": "2026-10-01T09:00:00+05:30",
+            "ends_at": "2026-10-01T09:30:00+05:30",
+            "timezone": "Asia/Kolkata",
+            "clinician": {
+              "clinician_id": "CLIN-SYN-01",
+              "display_name": "Dr Synthetic Asha"
+            },
+            "location": "Synthetic Clinic, Room 1",
+            "status": "confirmed"
+          },
+          "failure": null
+        },
+        "error": null,
+        "warnings": [],
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000006",
+          "tool_name": "get_booking_status",
+          "retrieved_at": "2026-09-30T11:00:00Z",
+          "duration_ms": 10,
+          "case_context_version": 1
+        }
+      }
+    },
+    {
+      "example_id": "expired_at_exact_boundary",
+      "tool": "get_booking_status",
+      "arguments": {
+        "case_id": "1042",
+        "booking_request_id": "00000000-0000-4000-8000-000000000301"
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "status": "ok",
+        "data": {
+          "booking_request_id": "00000000-0000-4000-8000-000000000301",
+          "draft_id": "00000000-0000-4000-8000-000000000201",
+          "as_of": "2026-09-30T10:02:00Z",
+          "hold_expires_at": "2026-09-30T10:02:00Z",
+          "booking_state": "expired",
+          "appointment": null,
+          "failure": null
+        },
+        "error": null,
+        "warnings": [],
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000007",
+          "tool_name": "get_booking_status",
+          "retrieved_at": "2026-09-30T10:02:00Z",
+          "duration_ms": 10,
+          "case_context_version": 1
+        }
+      }
+    },
+    {
+      "example_id": "superseded_attempt_failed_lookup",
+      "tool": "get_booking_status",
+      "arguments": {
+        "case_id": "1042",
+        "booking_request_id": "00000000-0000-4000-8000-000000000301"
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "status": "ok",
+        "data": {
+          "booking_request_id": "00000000-0000-4000-8000-000000000301",
+          "draft_id": "00000000-0000-4000-8000-000000000201",
+          "as_of": "2026-09-30T10:01:00Z",
+          "hold_expires_at": "2026-09-30T10:02:00Z",
+          "booking_state": "failed",
+          "appointment": null,
+          "failure": {
+            "code": "DRAFT_SUPERSEDED",
+            "message": "A newer selection replaced this uncommitted draft."
+          }
+        },
+        "error": null,
+        "warnings": [],
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000008",
+          "tool_name": "get_booking_status",
+          "retrieved_at": "2026-09-30T10:01:00Z",
+          "duration_ms": 10,
+          "case_context_version": 1
+        }
+      }
+    },
+    {
+      "example_id": "missing_confirmation",
+      "tool": "book_appointment",
+      "arguments": {
+        "case_id": "1042",
+        "draft_id": "00000000-0000-4000-8000-000000000201"
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "CONFIRMATION_REQUIRED",
+          "message": "The controller has not recorded explicit confirmation of this draft.",
+          "retryable": false,
+          "candidates": []
+        },
+        "warnings": [],
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000009",
+          "tool_name": "book_appointment",
+          "retrieved_at": "2026-09-30T10:00:00Z",
+          "duration_ms": 10,
+          "case_context_version": 1
+        }
+      }
+    },
+    {
+      "example_id": "superseded_draft_cannot_commit",
+      "tool": "book_appointment",
+      "arguments": {
+        "case_id": "1042",
+        "draft_id": "00000000-0000-4000-8000-000000000201"
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "DRAFT_SUPERSEDED",
+          "message": "A newer selection replaced this draft. Prepare and confirm the current selection.",
+          "retryable": false,
+          "candidates": []
+        },
+        "warnings": [],
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000010",
+          "tool_name": "book_appointment",
+          "retrieved_at": "2026-09-30T10:00:00Z",
+          "duration_ms": 10,
+          "case_context_version": 1
+        }
+      }
+    },
+    {
+      "example_id": "expired_hold_cannot_commit",
+      "tool": "book_appointment",
+      "arguments": {
+        "case_id": "1042",
+        "draft_id": "00000000-0000-4000-8000-000000000201"
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "HOLD_EXPIRED",
+          "message": "This uncommitted hold expired. Find availability and prepare a new selection.",
+          "retryable": false,
+          "candidates": []
+        },
+        "warnings": [],
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000011",
+          "tool_name": "book_appointment",
+          "retrieved_at": "2026-09-30T10:02:00Z",
+          "duration_ms": 10,
+          "case_context_version": 1
+        }
+      }
+    },
+    {
+      "example_id": "unavailable_slot_not_substituted",
+      "tool": "prepare_booking",
+      "arguments": {
+        "case_id": "1042",
+        "slot_id": "00000000-0000-4000-8000-000000000101"
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "SLOT_UNAVAILABLE",
+          "message": "The selected slot is no longer available. Search again.",
+          "retryable": false,
+          "candidates": []
+        },
+        "warnings": [],
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000012",
+          "tool_name": "prepare_booking",
+          "retrieved_at": "2026-09-30T10:00:00Z",
+          "duration_ms": 10,
+          "case_context_version": 1
+        }
+      }
+    },
+    {
+      "example_id": "unknown_or_cross_case_request",
+      "tool": "get_booking_status",
+      "arguments": {
+        "case_id": "1042",
+        "booking_request_id": "00000000-0000-4000-8000-000000000301"
+      },
+      "expected_response": {
+        "contract_version": "1.0.0",
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "RECORD_NOT_FOUND",
+          "message": "No permitted booking request was found.",
+          "retryable": false,
+          "candidates": []
+        },
+        "warnings": [],
+        "meta": {
+          "request_id": "00000000-0000-4000-8000-000000000013",
+          "tool_name": "get_booking_status",
+          "retrieved_at": "2026-09-30T10:00:00Z",
+          "duration_ms": 10,
+          "case_context_version": 1
+        }
+      }
+    }
+  ]
+}

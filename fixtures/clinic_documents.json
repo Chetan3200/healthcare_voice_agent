@@ -1,0 +1,522 @@
+{
+  "dataset_version": "synthetic-clinic-v1",
+  "reference_time": "2026-09-17T09:00:00Z",
+  "notice": "All content is synthetic mock clinic material for fixture coverage only and is not medical advice.",
+  "tables": {
+    "clinic_documents": [
+      {
+        "document_id": "DOC-CAST",
+        "slug": "synthetic-cast-care",
+        "created_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "document_id": "DOC-VISIT",
+        "slug": "synthetic-visit-preparation",
+        "created_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "document_id": "DOC-HOURS",
+        "slug": "synthetic-hours-contact",
+        "created_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "document_id": "DOC-EXPIRED",
+        "slug": "synthetic-expired-notice",
+        "created_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "document_id": "DOC-DRAFT",
+        "slug": "synthetic-draft-checklist",
+        "created_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "document_id": "DOC-WITHDRAWN",
+        "slug": "synthetic-withdrawn-notice",
+        "created_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "document_id": "DOC-FUTURE",
+        "slug": "synthetic-future-check-in",
+        "created_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "document_id": "DOC-ARRIVAL-A",
+        "slug": "synthetic-arrival-15",
+        "created_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "document_id": "DOC-ARRIVAL-B",
+        "slug": "synthetic-arrival-30",
+        "created_at": "2026-09-01T09:00:00Z"
+      }
+    ],
+    "document_versions": [
+      {
+        "document_id": "DOC-CAST",
+        "version": "1.0",
+        "title": "Synthetic Mock Clinic Cast Care (Historical)",
+        "full_text": "Synthetic mock clinic material: Cast Care, version 1.0.\n\nKeep the cast dry and do not insert objects inside it. Contact the fictional clinic if the cast becomes broken, wet, or unusually tight.\n\nThis synthetic fixture is not medical advice. For a real concern, follow the instructions from your treating team.",
+        "tags": [
+          "synthetic",
+          "cast-care",
+          "basic-care",
+          "historical"
+        ],
+        "approval_status": "approved",
+        "publication_status": "published",
+        "published_at": "2026-07-01T09:00:00Z",
+        "effective_from": "2026-07-01T09:00:00Z",
+        "effective_to": "2026-08-31T23:59:59Z",
+        "is_current": false,
+        "created_at": "2026-07-01T09:00:00Z",
+        "updated_at": "2026-08-15T09:00:00Z"
+      },
+      {
+        "document_id": "DOC-CAST",
+        "version": "2.0",
+        "title": "Synthetic Mock Clinic Cast Care (Current)",
+        "full_text": "Synthetic mock clinic material: Cast Care, version 2.0.\n\nKeep the cast dry and do not insert objects inside it. Contact the fictional clinic if the cast becomes broken, wet, or unusually tight.\n\nThis synthetic fixture is not medical advice. For a real concern, follow the instructions from your treating team.",
+        "tags": [
+          "synthetic",
+          "cast-care",
+          "basic-care"
+        ],
+        "approval_status": "approved",
+        "publication_status": "published",
+        "published_at": "2026-09-01T09:00:00Z",
+        "effective_from": "2026-09-01T09:00:00Z",
+        "effective_to": null,
+        "is_current": true,
+        "created_at": "2026-09-01T09:00:00Z",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "document_id": "DOC-VISIT",
+        "version": "1.0",
+        "title": "Synthetic Mock Clinic Visit Preparation",
+        "full_text": "Synthetic mock clinic material: Visit Preparation.\n\nBring a photo ID, your appointment details, and any imaging disc or report already provided to you. Arrive according to the appointment-specific check-in instruction.\n\nThis synthetic fixture is not medical advice. Contact the fictional clinic to clarify logistics.",
+        "tags": [
+          "synthetic",
+          "visit",
+          "logistics"
+        ],
+        "approval_status": "approved",
+        "publication_status": "published",
+        "published_at": "2026-09-01T09:00:00Z",
+        "effective_from": "2026-09-01T09:00:00Z",
+        "effective_to": null,
+        "is_current": true,
+        "created_at": "2026-09-01T09:00:00Z",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "document_id": "DOC-HOURS",
+        "version": "1.0",
+        "title": "Synthetic Mock Clinic Hours and Contact",
+        "full_text": "Synthetic mock clinic material: Hours and Contact.\n\nFictional Fracture Clinic hours are Monday to Friday, 08:00 to 17:00 local time. For fixture questions only, use 555-0100 or mockclinic@example.test.\n\nThis synthetic fixture is not medical advice and the contact details are not real.",
+        "tags": [
+          "synthetic",
+          "hours",
+          "contact",
+          "logistics"
+        ],
+        "approval_status": "approved",
+        "publication_status": "published",
+        "published_at": "2026-09-01T09:00:00Z",
+        "effective_from": "2026-09-01T09:00:00Z",
+        "effective_to": null,
+        "is_current": true,
+        "created_at": "2026-09-01T09:00:00Z",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "document_id": "DOC-EXPIRED",
+        "version": "1.0",
+        "title": "Synthetic Mock Clinic Expired Notice",
+        "full_text": "Synthetic mock clinic material: Retired Lobby Check-in Notice.\n\nThis historical notice applied only through 2026-08-31 and is retained as expired fixture content. Do not use it for current appointment logistics.\n\nThis synthetic fixture is not medical advice.",
+        "tags": [
+          "synthetic",
+          "expired",
+          "logistics"
+        ],
+        "approval_status": "approved",
+        "publication_status": "published",
+        "published_at": "2026-08-01T09:00:00Z",
+        "effective_from": "2026-08-01T09:00:00Z",
+        "effective_to": "2026-08-31T23:59:59Z",
+        "is_current": false,
+        "created_at": "2026-08-01T09:00:00Z",
+        "updated_at": "2026-08-01T09:00:00Z"
+      },
+      {
+        "document_id": "DOC-DRAFT",
+        "version": "0.1",
+        "title": "Synthetic Mock Clinic Draft Checklist",
+        "full_text": "Synthetic mock clinic material: Draft Accessibility Checklist.\n\nDraft-only fixture content: confirm accessibility arrangements with the fictional clinic before relying on this checklist. This text is not published.\n\nThis synthetic fixture is not medical advice.",
+        "tags": [
+          "synthetic",
+          "draft",
+          "accessibility"
+        ],
+        "approval_status": "draft",
+        "publication_status": "draft",
+        "published_at": null,
+        "effective_from": null,
+        "effective_to": null,
+        "is_current": false,
+        "created_at": "2026-09-10T09:00:00Z",
+        "updated_at": "2026-09-10T09:00:00Z"
+      },
+      {
+        "document_id": "DOC-WITHDRAWN",
+        "version": "1.0",
+        "title": "Synthetic Mock Clinic Withdrawn Notice",
+        "full_text": "Synthetic mock clinic material: Withdrawn Parking Notice.\n\nWithdrawn fixture content: the former parking directions must not be used. Contact the fictional clinic for current logistics.\n\nThis synthetic fixture is not medical advice.",
+        "tags": [
+          "synthetic",
+          "withdrawn",
+          "parking"
+        ],
+        "approval_status": "approved",
+        "publication_status": "withdrawn",
+        "published_at": "2026-08-15T09:00:00Z",
+        "effective_from": "2026-08-15T09:00:00Z",
+        "effective_to": null,
+        "is_current": false,
+        "created_at": "2026-08-15T09:00:00Z",
+        "updated_at": "2026-09-05T09:00:00Z"
+      },
+      {
+        "document_id": "DOC-FUTURE",
+        "version": "1.0",
+        "title": "Synthetic Mock Clinic Future Check-in Process",
+        "full_text": "Synthetic mock clinic material: Future Check-in Process.\n\nBeginning 2026-10-01, use the fictional east desk for appointment check-in unless the appointment record says otherwise.\n\nThis synthetic fixture is not medical advice.",
+        "tags": [
+          "synthetic",
+          "future",
+          "check-in"
+        ],
+        "approval_status": "approved",
+        "publication_status": "published",
+        "published_at": "2026-09-15T09:00:00Z",
+        "effective_from": "2026-10-01T00:00:00Z",
+        "effective_to": null,
+        "is_current": true,
+        "created_at": "2026-09-15T09:00:00Z",
+        "updated_at": "2026-09-15T09:00:00Z"
+      },
+      {
+        "document_id": "DOC-ARRIVAL-A",
+        "version": "1.0",
+        "title": "Synthetic Mock Clinic Arrival Guidance A (15 Minutes)",
+        "full_text": "Synthetic mock clinic material: Appointment Arrival Guidance A.\n\nFor the synthetic standard fracture follow-up appointment context, arrive 15 minutes before the scheduled start time for check-in.\n\nThis synthetic fixture is not medical advice.",
+        "tags": [
+          "synthetic",
+          "arrival",
+          "appointment",
+          "conflict"
+        ],
+        "approval_status": "approved",
+        "publication_status": "published",
+        "published_at": "2026-09-01T09:00:00Z",
+        "effective_from": "2026-09-01T09:00:00Z",
+        "effective_to": null,
+        "is_current": true,
+        "created_at": "2026-09-01T09:00:00Z",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "document_id": "DOC-ARRIVAL-B",
+        "version": "1.0",
+        "title": "Synthetic Mock Clinic Arrival Guidance B (30 Minutes)",
+        "full_text": "Synthetic mock clinic material: Appointment Arrival Guidance B.\n\nFor the synthetic standard fracture follow-up appointment context, arrive 30 minutes before the scheduled start time for check-in.\n\nThis synthetic fixture is not medical advice.",
+        "tags": [
+          "synthetic",
+          "arrival",
+          "appointment",
+          "conflict"
+        ],
+        "approval_status": "approved",
+        "publication_status": "published",
+        "published_at": "2026-09-01T09:00:00Z",
+        "effective_from": "2026-09-01T09:00:00Z",
+        "effective_to": null,
+        "is_current": true,
+        "created_at": "2026-09-01T09:00:00Z",
+        "updated_at": "2026-09-01T09:00:00Z"
+      }
+    ],
+    "document_chunks": [
+      {
+        "chunk_id": "DOC-CAST-1.0-C0",
+        "document_id": "DOC-CAST",
+        "document_version": "1.0",
+        "chunk_index": 0,
+        "section": "title",
+        "content": "Synthetic mock clinic material: Cast Care, version 1.0.",
+        "updated_at": "2026-08-15T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-CAST-1.0-C1",
+        "document_id": "DOC-CAST",
+        "document_version": "1.0",
+        "chunk_index": 1,
+        "section": "guidance",
+        "content": "Keep the cast dry and do not insert objects inside it. Contact the fictional clinic if the cast becomes broken, wet, or unusually tight.",
+        "updated_at": "2026-08-15T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-CAST-1.0-C2",
+        "document_id": "DOC-CAST",
+        "document_version": "1.0",
+        "chunk_index": 2,
+        "section": "notice",
+        "content": "This synthetic fixture is not medical advice. For a real concern, follow the instructions from your treating team.",
+        "updated_at": "2026-08-15T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-CAST-2.0-C0",
+        "document_id": "DOC-CAST",
+        "document_version": "2.0",
+        "chunk_index": 0,
+        "section": "title",
+        "content": "Synthetic mock clinic material: Cast Care, version 2.0.",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-CAST-2.0-C1",
+        "document_id": "DOC-CAST",
+        "document_version": "2.0",
+        "chunk_index": 1,
+        "section": "guidance",
+        "content": "Keep the cast dry and do not insert objects inside it. Contact the fictional clinic if the cast becomes broken, wet, or unusually tight.",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-CAST-2.0-C2",
+        "document_id": "DOC-CAST",
+        "document_version": "2.0",
+        "chunk_index": 2,
+        "section": "notice",
+        "content": "This synthetic fixture is not medical advice. For a real concern, follow the instructions from your treating team.",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-VISIT-1.0-C0",
+        "document_id": "DOC-VISIT",
+        "document_version": "1.0",
+        "chunk_index": 0,
+        "section": "title",
+        "content": "Synthetic mock clinic material: Visit Preparation.",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-VISIT-1.0-C1",
+        "document_id": "DOC-VISIT",
+        "document_version": "1.0",
+        "chunk_index": 1,
+        "section": "guidance",
+        "content": "Bring a photo ID, your appointment details, and any imaging disc or report already provided to you. Arrive according to the appointment-specific check-in instruction.",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-VISIT-1.0-C2",
+        "document_id": "DOC-VISIT",
+        "document_version": "1.0",
+        "chunk_index": 2,
+        "section": "notice",
+        "content": "This synthetic fixture is not medical advice. Contact the fictional clinic to clarify logistics.",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-HOURS-1.0-C0",
+        "document_id": "DOC-HOURS",
+        "document_version": "1.0",
+        "chunk_index": 0,
+        "section": "title",
+        "content": "Synthetic mock clinic material: Hours and Contact.",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-HOURS-1.0-C1",
+        "document_id": "DOC-HOURS",
+        "document_version": "1.0",
+        "chunk_index": 1,
+        "section": "guidance",
+        "content": "Fictional Fracture Clinic hours are Monday to Friday, 08:00 to 17:00 local time. For fixture questions only, use 555-0100 or mockclinic@example.test.",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-HOURS-1.0-C2",
+        "document_id": "DOC-HOURS",
+        "document_version": "1.0",
+        "chunk_index": 2,
+        "section": "notice",
+        "content": "This synthetic fixture is not medical advice and the contact details are not real.",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-EXPIRED-1.0-C0",
+        "document_id": "DOC-EXPIRED",
+        "document_version": "1.0",
+        "chunk_index": 0,
+        "section": "title",
+        "content": "Synthetic mock clinic material: Retired Lobby Check-in Notice.",
+        "updated_at": "2026-08-01T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-EXPIRED-1.0-C1",
+        "document_id": "DOC-EXPIRED",
+        "document_version": "1.0",
+        "chunk_index": 1,
+        "section": "guidance",
+        "content": "This historical notice applied only through 2026-08-31 and is retained as expired fixture content. Do not use it for current appointment logistics.",
+        "updated_at": "2026-08-01T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-EXPIRED-1.0-C2",
+        "document_id": "DOC-EXPIRED",
+        "document_version": "1.0",
+        "chunk_index": 2,
+        "section": "notice",
+        "content": "This synthetic fixture is not medical advice.",
+        "updated_at": "2026-08-01T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-DRAFT-0.1-C0",
+        "document_id": "DOC-DRAFT",
+        "document_version": "0.1",
+        "chunk_index": 0,
+        "section": "title",
+        "content": "Synthetic mock clinic material: Draft Accessibility Checklist.",
+        "updated_at": "2026-09-10T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-DRAFT-0.1-C1",
+        "document_id": "DOC-DRAFT",
+        "document_version": "0.1",
+        "chunk_index": 1,
+        "section": "guidance",
+        "content": "Draft-only fixture content: confirm accessibility arrangements with the fictional clinic before relying on this checklist. This text is not published.",
+        "updated_at": "2026-09-10T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-DRAFT-0.1-C2",
+        "document_id": "DOC-DRAFT",
+        "document_version": "0.1",
+        "chunk_index": 2,
+        "section": "notice",
+        "content": "This synthetic fixture is not medical advice.",
+        "updated_at": "2026-09-10T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-WITHDRAWN-1.0-C0",
+        "document_id": "DOC-WITHDRAWN",
+        "document_version": "1.0",
+        "chunk_index": 0,
+        "section": "title",
+        "content": "Synthetic mock clinic material: Withdrawn Parking Notice.",
+        "updated_at": "2026-09-05T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-WITHDRAWN-1.0-C1",
+        "document_id": "DOC-WITHDRAWN",
+        "document_version": "1.0",
+        "chunk_index": 1,
+        "section": "guidance",
+        "content": "Withdrawn fixture content: the former parking directions must not be used. Contact the fictional clinic for current logistics.",
+        "updated_at": "2026-09-05T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-WITHDRAWN-1.0-C2",
+        "document_id": "DOC-WITHDRAWN",
+        "document_version": "1.0",
+        "chunk_index": 2,
+        "section": "notice",
+        "content": "This synthetic fixture is not medical advice.",
+        "updated_at": "2026-09-05T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-FUTURE-1.0-C0",
+        "document_id": "DOC-FUTURE",
+        "document_version": "1.0",
+        "chunk_index": 0,
+        "section": "title",
+        "content": "Synthetic mock clinic material: Future Check-in Process.",
+        "updated_at": "2026-09-15T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-FUTURE-1.0-C1",
+        "document_id": "DOC-FUTURE",
+        "document_version": "1.0",
+        "chunk_index": 1,
+        "section": "guidance",
+        "content": "Beginning 2026-10-01, use the fictional east desk for appointment check-in unless the appointment record says otherwise.",
+        "updated_at": "2026-09-15T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-FUTURE-1.0-C2",
+        "document_id": "DOC-FUTURE",
+        "document_version": "1.0",
+        "chunk_index": 2,
+        "section": "notice",
+        "content": "This synthetic fixture is not medical advice.",
+        "updated_at": "2026-09-15T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-ARRIVAL-A-1.0-C0",
+        "document_id": "DOC-ARRIVAL-A",
+        "document_version": "1.0",
+        "chunk_index": 0,
+        "section": "title",
+        "content": "Synthetic mock clinic material: Appointment Arrival Guidance A.",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-ARRIVAL-A-1.0-C1",
+        "document_id": "DOC-ARRIVAL-A",
+        "document_version": "1.0",
+        "chunk_index": 1,
+        "section": "guidance",
+        "content": "For the synthetic standard fracture follow-up appointment context, arrive 15 minutes before the scheduled start time for check-in.",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-ARRIVAL-A-1.0-C2",
+        "document_id": "DOC-ARRIVAL-A",
+        "document_version": "1.0",
+        "chunk_index": 2,
+        "section": "notice",
+        "content": "This synthetic fixture is not medical advice.",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-ARRIVAL-B-1.0-C0",
+        "document_id": "DOC-ARRIVAL-B",
+        "document_version": "1.0",
+        "chunk_index": 0,
+        "section": "title",
+        "content": "Synthetic mock clinic material: Appointment Arrival Guidance B.",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-ARRIVAL-B-1.0-C1",
+        "document_id": "DOC-ARRIVAL-B",
+        "document_version": "1.0",
+        "chunk_index": 1,
+        "section": "guidance",
+        "content": "For the synthetic standard fracture follow-up appointment context, arrive 30 minutes before the scheduled start time for check-in.",
+        "updated_at": "2026-09-01T09:00:00Z"
+      },
+      {
+        "chunk_id": "DOC-ARRIVAL-B-1.0-C2",
+        "document_id": "DOC-ARRIVAL-B",
+        "document_version": "1.0",
+        "chunk_index": 2,
+        "section": "notice",
+        "content": "This synthetic fixture is not medical advice.",
+        "updated_at": "2026-09-01T09:00:00Z"
+      }
+    ]
+  }
+}
