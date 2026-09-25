@@ -141,17 +141,23 @@ class HTTPSettings(ProviderSettings):
         return value
 
 
+_SELF_HOSTED_LLM_MODELS = {
+    "hybrid_diffusion": "yuchen-zhu-zyc/HybridDiffusion-2B",
+    "qwen": "Qwen/Qwen3.8-27B-FP8",
+}
+
+
 class LLMSettings(HTTPSettings):
-    supported_providers: ClassVar[tuple[str, ...]] = ("openai", "hybrid_diffusion")
+    supported_providers: ClassVar[tuple[str, ...]] = ("openai", "hybrid_diffusion", "qwen")
     model: NonEmpty = "gpt-4.1-mini-2025-04-14"
     max_output_tokens: Annotated[int, Field(gt=0)] = 512
 
     @model_validator(mode="before")
     @classmethod
     def self_hosted_defaults(cls, value):
-        if isinstance(value, dict) and value.get("provider") == "hybrid_diffusion":
+        if isinstance(value, dict) and value.get("provider") in _SELF_HOSTED_LLM_MODELS:
             value = dict(value)
-            value.setdefault("model", "yuchen-zhu-zyc/HybridDiffusion-2B")
+            value.setdefault("model", _SELF_HOSTED_LLM_MODELS[value["provider"]])
             value.setdefault("base_url", "http://127.0.0.1:30000/v1")
         return value
 
@@ -159,11 +165,12 @@ class LLMSettings(HTTPSettings):
     def require_endpoint(self):
         if self.base_url is None:
             raise ValueError("LLM requires an HTTP endpoint")
-        if self.provider == "hybrid_diffusion":
-            if self.model != "yuchen-zhu-zyc/HybridDiffusion-2B":
-                raise ValueError("HybridDiffusion requires LLM_MODEL=yuchen-zhu-zyc/HybridDiffusion-2B")
+        expected_model = _SELF_HOSTED_LLM_MODELS.get(self.provider)
+        if expected_model is not None:
+            if self.model != expected_model:
+                raise ValueError(f"{self.provider} requires LLM_MODEL={expected_model}")
             if urlsplit(self.base_url).hostname == "api.openai.com":
-                raise ValueError("HybridDiffusion requires its own LLM_BASE_URL")
+                raise ValueError(f"{self.provider} requires its own LLM_BASE_URL")
         return self
 
 
@@ -309,8 +316,18 @@ class AppConfig(SettingsModel):
     @model_validator(mode="after")
     def demo_pipeline_requirements(self):
         if self.agent_mode in {"frontdesk_demo", "clinician"}:
-            if any(stage.provider != "openai" for stage in (self.stt, self.llm, self.tts)):
-                raise ValueError("The front-desk and clinician profiles require OpenAI STT, LLM and TTS.")
+            providers = (self.stt.provider, self.llm.provider, self.tts.provider)
+            allowed = {("openai", "openai", "openai")}
+            if self.agent_mode == "clinician":
+                allowed.add(("nemotron", "hybrid_diffusion", "breeze"))
+                allowed.add(("nemotron", "openai", "breeze"))
+                allowed.add(("nemotron", "qwen", "breeze"))
+            if providers not in allowed:
+                raise ValueError(
+                    "The front-desk profile requires OpenAI STT, LLM and TTS. "
+                    "The clinician profile supports OpenAI-only or Nemotron/Breeze "
+                    "with an OpenAI, HybridDiffusion or Qwen LLM."
+                )
             if not self.stt.finalize_transcripts:
                 raise ValueError("The tool-enabled voice profiles require finalized transcripts.")
         return self
@@ -464,6 +481,7 @@ def write_run_config(config: AppConfig, run_dir: str | Path) -> Path:
             "tts_http_max_retries": 0, "stt_auto_reconnect": False,
             "self_hosted_native_validation": "not established by offline tests",
             "hybrid_diffusion_thinking_enabled": False if config.llm.provider == "hybrid_diffusion" else None,
+            "qwen_thinking_enabled": False if config.llm.provider == "qwen" else None,
         },
         "voice_policy": {
             "transport": "SmallWebRTCTransport",

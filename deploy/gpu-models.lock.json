@@ -29,6 +29,16 @@
       "model_revision": "04e16a066c17a512f9a567b01362d6ab811bcf4b",
       "server_port": 30000,
       "runtime_note": "Upstream isolated Python 3.10 eval environment, bundled SGLang plus modified FlashInfer; not generic pip sglang"
+    },
+    "qwen": {
+      "runtime_repository": "https://github.com/vllm-project/vllm.git",
+      "runtime_commit": "ced6857afa0ea7b2e3f0846a62e1394e90f15607",
+      "runtime_package": "vllm",
+      "runtime_version": "0.30.0",
+      "model_repository": "Qwen/Qwen3.8-27B-FP8",
+      "model_revision": "017b9c7af6b5689d5dd426a76e0bc077eb5ca20a",
+      "server_port": 30000,
+      "runtime_note": "Separate GPU environment; two GPUs, text-only, 16K context, thinking disabled, qwen3_xml tool parser. GPU startup and tool use not yet verified."
     }
   }
 }

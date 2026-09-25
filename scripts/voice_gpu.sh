@@ -1,5 +1,6 @@
 #!/bin/sh
-# Select three self-hosted model servers. No installs, downloads or .env changes.
+# Self-hosted speech; HybridDiffusion by default, Qwen or OpenAI by explicit selection.
+# No installs, downloads or .env changes.
 set -eu
 cd "$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
 export STT_PROVIDER=nemotron
@@ -7,9 +8,25 @@ export STT_MODEL=nemotron-3.5-asr-streaming-0.6b
 export STT_BASE_URL="${STT_BASE_URL:-ws://127.0.0.1:8080/v1/audio/transcriptions/realtime}"
 export STT_LANGUAGE="${STT_LANGUAGE:-auto}"
 export STT_FINALIZE_TRANSCRIPTS=true
-export LLM_PROVIDER=hybrid_diffusion
-export LLM_MODEL=yuchen-zhu-zyc/HybridDiffusion-2B
-export LLM_BASE_URL="${LLM_BASE_URL:-http://127.0.0.1:30000/v1}"
+case "${GPU_LLM_PROVIDER:-hybrid_diffusion}" in
+  hybrid_diffusion)
+    export LLM_PROVIDER=hybrid_diffusion
+    export LLM_MODEL=yuchen-zhu-zyc/HybridDiffusion-2B
+    export LLM_BASE_URL="${LLM_BASE_URL:-http://127.0.0.1:30000/v1}"
+    ;;
+  qwen)
+    export LLM_PROVIDER=qwen
+    export LLM_MODEL=Qwen/Qwen3.8-27B-FP8
+    export LLM_BASE_URL="${LLM_BASE_URL:-http://127.0.0.1:30000/v1}"
+    ;;
+  openai)
+    export LLM_PROVIDER=openai
+    export LLM_MODEL=gpt-4.1-mini-2025-04-14
+    # Never reuse an inherited self-hosted endpoint for the OpenAI client/key.
+    export LLM_BASE_URL=https://api.openai.com/v1
+    ;;
+  *) echo 'GPU_LLM_PROVIDER must be hybrid_diffusion, qwen or openai.' >&2; exit 1 ;;
+esac
 export TTS_PROVIDER=breeze
 export TTS_MODEL=BreezeBlue/Breeze-TTS-2
 export TTS_BASE_URL="${TTS_BASE_URL:-http://127.0.0.1:7861}"

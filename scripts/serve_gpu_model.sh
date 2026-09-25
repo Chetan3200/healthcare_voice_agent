@@ -4,13 +4,13 @@ set -Eeuo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 die() { printf 'GPU server: %s\n' "$*" >&2; exit 1; }
 usage() {
-  printf '%s\n' 'Usage: scripts/serve_gpu_model.sh nemotron|breeze|hybrid_diffusion' \
+  printf '%s\n' 'Usage: scripts/serve_gpu_model.sh nemotron|breeze|hybrid_diffusion|qwen' \
     'Prepare separate runtimes and local weights first: docs/gpu-models.md'
 }
 [[ $# == 1 ]] || { usage; exit 2; }
 [[ "$1" != --help && "$1" != -h ]] || { usage; exit 0; }
 require_dir() { [[ -d "$1" ]] || die "$2 directory is missing; see docs/gpu-models.md"; }
-require_file() { [[ -s "$1" ]] || die "$2 file is missing or empty; see docs/gpu-models.md"; }
+require_file() { [[ -s "$1" ]] || die "$2 file is missing or empty: $1; see docs/gpu-models.md"; }
 require_exec() { [[ -x "$1" ]] || die "$2 executable is missing; see docs/gpu-models.md"; }
 require_checkout() {
   require_dir "$1" "$3"
@@ -40,7 +40,7 @@ case "$1" in
     exec "$NEMO_BIN" serve --host 127.0.0.1 --port 8080 --no-ui \
       --asr-model "$NEMO_MODEL_PATH" --backend cuda \
       --asr.endpointing.enable=false --asr.batching.enabled=false \
-      --nmt.enabled=false --tts.enabled=false --s2s.enabled=false
+      --nmt.enabled=false --tts.enabled=false
     ;;
   breeze)
     : "${BREEZE_SOURCE_DIR:?Set BREEZE_SOURCE_DIR to the prepared pinned checkout}"
@@ -75,7 +75,8 @@ case "$1" in
     : "${HYBRID_MODEL_PATH:?Set HYBRID_MODEL_PATH to the downloaded checkpoint directory}"
     require_checkout "$HYBRID_SOURCE_DIR" 6ca547aebb72bfe897e80e0a683c776789e5f38c HybridDiffusion
     require_dir "$HYBRID_MODEL_PATH" HybridDiffusion-model
-    for file in config.json tokenizer_config.json tokenizer.json model.safetensors; do
+    for file in config.json tokenizer_config.json tokenizer.json \
+      model.safetensors.index.json model-00001-of-00001.safetensors; do
       require_file "$HYBRID_MODEL_PATH/$file" HybridDiffusion-checkpoint
     done
     mode="${GPU_HYBRID_MODE:-self-spec}"
@@ -93,6 +94,32 @@ case "$1" in
     exec bash "$HYBRID_SOURCE_DIR/eval/scripts/serve.sh" "$mode" "$HYBRID_MODEL_PATH" -- \
       --served-model-name yuchen-zhu-zyc/HybridDiffusion-2B \
       --tool-call-parser qwen3_coder
+    ;;
+  qwen)
+    : "${QWEN_PYTHON:?Set QWEN_PYTHON to the separate vLLM environment interpreter}"
+    : "${QWEN_MODEL_PATH:?Set QWEN_MODEL_PATH to the local Qwen3.8-27B-FP8 checkpoint}"
+    : "${CUDA_VISIBLE_DEVICES:?Select two free GPUs explicitly, e.g. CUDA_VISIBLE_DEVICES=2,3}"
+    require_exec "$QWEN_PYTHON" Qwen-Python
+    require_dir "$QWEN_MODEL_PATH" Qwen-model
+    QWEN_PYTHON="$(cd "$(dirname "$QWEN_PYTHON")" && pwd)/$(basename "$QWEN_PYTHON")"
+    QWEN_MODEL_PATH="$(cd "$QWEN_MODEL_PATH" && pwd)"
+    [[ "$QWEN_PYTHON" != "$ROOT/.venv/"* ]] || die 'Qwen must not use the application .venv'
+    [[ "$("$QWEN_PYTHON" -c 'from importlib.metadata import version; print(version("vllm"))')" == 0.30.0 ]] || die 'Qwen requires vLLM 0.30.0 in its separate environment'
+    for file in config.json tokenizer_config.json tokenizer.json chat_template.jinja \
+      model.safetensors.index.json outside.safetensors mtp.safetensors; do
+      require_file "$QWEN_MODEL_PATH/$file" Qwen-checkpoint
+    done
+    for layer in {0..63}; do
+      require_file "$QWEN_MODEL_PATH/layers-$layer.safetensors" Qwen-checkpoint
+    done
+    # Reuse the existing LLM port/forward. Stop HybridDiffusion manually first.
+    # No speculative decoding or extra serving layer for this initial trial.
+    exec "$QWEN_PYTHON" -m vllm.entrypoints.openai.api_server \
+      --model "$QWEN_MODEL_PATH" --served-model-name Qwen/Qwen3.8-27B-FP8 \
+      --host 127.0.0.1 --port 30000 --tensor-parallel-size 2 \
+      --max-model-len 16384 --max-num-seqs 1 --gpu-memory-utilization 0.90 \
+      --language-model-only --enable-auto-tool-choice --tool-call-parser qwen3_xml \
+      --reasoning-parser qwen3 --default-chat-template-kwargs '{"enable_thinking":false}'
     ;;
   *) usage; exit 2 ;;
 esac

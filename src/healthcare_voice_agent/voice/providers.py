@@ -218,13 +218,13 @@ def build_llm(config: AppConfig, *, system_instruction: str | None = None,
         "model": stage.model,
         "max_completion_tokens": stage.max_output_tokens,
     }
-    if stage.provider == "hybrid_diffusion":
-        from healthcare_voice_agent.voice.hybrid_llm import HybridDiffusionLLMMixin
+    if stage.provider in {"hybrid_diffusion", "qwen"}:
+        from healthcare_voice_agent.voice.hybrid_llm import SelfHostedLLMMixin
 
-        class ConfiguredHybridDiffusion(HybridDiffusionLLMMixin, ConfiguredOpenAILLM):
+        class ConfiguredSelfHostedLLM(SelfHostedLLMMixin, ConfiguredOpenAILLM):
             pass
 
-        service = ConfiguredHybridDiffusion(
+        service = ConfiguredSelfHostedLLM(
             # The SDK requires a nonempty value even for an unauthenticated
             # loopback server. Never forward the private OpenAI key here.
             api_key=stage.api_key.get_secret_value() if stage.api_key else "not-required",
@@ -235,7 +235,8 @@ def build_llm(config: AppConfig, *, system_instruction: str | None = None,
         # Avoid the base constructor's system-instruction DEBUG log.
         if system_instruction is not None:
             service._settings.system_instruction = system_instruction
-        service._hybrid_deadline_seconds = stage.timeout_seconds
+        service._model_server_deadline_seconds = stage.timeout_seconds
+        service._model_server_label = "Qwen" if stage.provider == "qwen" else "HybridDiffusion"
         return service
     if config.agent_mode == "frontdesk_demo":
         settings["extra"] = {"parallel_tool_calls": False}

@@ -1,4 +1,4 @@
-"""HybridDiffusion's pinned SGLang chat protocol, on Pipecat's OpenAI transport.
+"""Shared Qwen-family chat compatibility on Pipecat's OpenAI transport.
 
 No model loading and no fallback. Server-side decoding mode is chosen by the
 GPU launcher, not inferred from the model ID. The native Pipecat consumer owns
@@ -10,8 +10,11 @@ from __future__ import annotations
 import asyncio
 
 
-class HybridDiffusionLLMMixin:
+class SelfHostedLLMMixin:
     """Adapt requests without replacing Pipecat's context/stream lifecycle."""
+
+    # Qwen's template has no developer role; use Pipecat's native conversion.
+    supports_developer_role = False
 
     def build_chat_completion_params(self, params_from_context):
         params = super().build_chat_completion_params(params_from_context)
@@ -40,13 +43,13 @@ class HybridDiffusionLLMMixin:
     async def _process_context(self, context):
         # HTTP phase timeouts alone let a server trickle SSE forever. Bound the
         # whole turn as well; the base async context manager closes the stream.
-        async with asyncio.timeout(self._hybrid_deadline_seconds):
+        async with asyncio.timeout(self._model_server_deadline_seconds):
             await super()._process_context(context)
 
     async def push_error(self, error_msg, exception=None, **kwargs):
         # Native SDK errors may contain response bodies, request text or tokens.
         # Do not attach them to frames, traces, browser messages or logs.
         await super().push_error(
-            error_msg="HybridDiffusion request failed. Check the model server and reconnect.",
+            error_msg=f"{self._model_server_label} request failed. Check the model server and reconnect.",
             force_treat_as_permanent=True,
         )
