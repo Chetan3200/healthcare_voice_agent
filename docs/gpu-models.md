@@ -1,21 +1,22 @@
 # Optional GPU model servers
 
-The application connects to three independent servers. Its existing Python 3.11
-`voice` extra and `uv.lock` stay unchanged; do **not** install any model-server
-requirements into the application's `.venv`. Existing OpenAI and local-speech
-launchers remain available.
+The application uses separate speech servers and either OpenAI or one self-hosted
+LLM server. Its Python 3.11 `voice` extra and `uv.lock` stay unchanged; do **not**
+install model-server requirements into the application's `.venv`. OpenAI-only
+launchers remain available; see the [README](../README.md#run-the-agents).
 
 | Stage | Provider | Server | Default port |
 |---|---|---|---|
 | STT | `nemotron` | Pinned NeMo-Speech.cpp, CUDA, local Nemotron Q8 GGUF | 8080 |
 | TTS | `breeze` | Pinned Breeze Python streaming API | 7861 |
 | LLM | `hybrid_diffusion` | Bundled modified SGLang/FlashInfer | 30000 |
+| LLM alternative | `qwen` | vLLM 0.30.0, Qwen3.8-27B-FP8 | 30000 |
 
-The app's browser UI remains on **7860**, avoiding Breeze's upstream default
-port conflict. `deploy/gpu-models.lock.json` records inspected source/model
-revisions. This is **not** a full CUDA dependency or container lock. No real
-GPU inference, memory fit, speech quality, tool correctness or latency has been
-verified by the offline adapter tests.
+Run only one self-hosted LLM on port 30000. `GPU_LLM_PROVIDER=openai` needs no
+local LLM server. The default browser UI port is **7860**; the README's GPU
+clinician example explicitly selects 7864. `deploy/gpu-models.lock.json` records
+source/model revisions, not a complete dependency/container lock. Offline tests
+do not establish GPU inference, memory fit, speech quality, tool correctness or latency.
 
 ## 1. Prepare the GPU host once
 
@@ -25,9 +26,11 @@ upstream setup uses CUDA 12.8 wheels and Python **3.10**; the app uses **3.11**.
 The upstream runtime was validated on H100, not every consumer GPU. Confirm
 kernel/toolkit compatibility on the actual allocated GPU.
 
-The following are explicit **future installation/download commands**, not
-launcher side effects. Run them yourself on the GPU host. Set paths outside the
-application checkout to avoid accidental commits and dependency contamination:
+The following are explicit installation/download commands, not launcher side
+effects. Skip preparation for runtimes/assets already present at the pinned
+versions. Set paths outside the application checkout to avoid accidental commits
+and dependency contamination; on Vast, `/workspace/healthcare-voice-models` is the
+existing deployment root rather than the `$HOME` example below:
 
 ```bash
 export GPU_ROOT="$HOME/healthcare-voice-models"
@@ -104,7 +107,8 @@ These versions follow the pinned upstream requirements and Docker recipe; some
 transitive dependencies remain unpinned. Keep the resulting freeze and actual
 GPU/driver information after validating. Do not substitute the app environment.
 The app currently uses **voice design**, a style instruction with no reference
-audio. It does not expose voice-cloning file upload. Breeze lists English and
+audio. `S0` is a voice label, not a fixed speaker identity. The app does not expose
+voice-cloning file upload. Breeze lists English and
 Chinese; Hindi/Hinglish pronunciation is not established.
 
 ### HybridDiffusion isolated environment
@@ -129,16 +133,55 @@ The launcher selects `self-spec` by default; set `GPU_HYBRID_MODE=diffusion` or
 The app disables thinking through `chat_template_kwargs.enable_thinking=false`.
 The clinical tool backends themselves remain outside this integration's scope.
 
+### Qwen isolated environment
+
+The current launcher pins **Qwen3.8-27B-FP8**. It requires a separate vLLM
+environment and two explicitly selected GPUs.
+
+```bash
+export QWEN_PYTHON="$GPU_ROOT/envs/qwen/bin/python"
+export QWEN_MODEL_PATH="$GPU_ROOT/models/Qwen3.8-27B-FP8"
+uv venv --python 3.12 "$GPU_ROOT/envs/qwen"
+uv pip install --python "$QWEN_PYTHON" 'vllm==0.30.0'
+HF_HUB_OFFLINE=0 "$GPU_ROOT/envs/qwen/bin/hf" download Qwen/Qwen3.8-27B-FP8 \
+  --revision 017b9c7af6b5689d5dd426a76e0bc077eb5ca20a \
+  --local-dir "$QWEN_MODEL_PATH"
+```
+
+The launcher uses text-only mode, 16K context, one concurrent sequence, the
+`qwen3_xml` tool parser and thinking disabled. It does not enable speculative
+decoding. Startup and actual clinician-tool reliability still require verification.
+
 ## 2. Start the prepared servers
 
 From the **application repository**, run one command per terminal, with the
 exports above present in each terminal:
 
 ```bash
-./scripts/serve_gpu_model.sh nemotron
-./scripts/serve_gpu_model.sh breeze
-./scripts/serve_gpu_model.sh hybrid_diffusion
+# Example assignments; first verify these GPUs are available on your host.
+CUDA_VISIBLE_DEVICES=0 ./scripts/serve_gpu_model.sh nemotron
+CUDA_VISIBLE_DEVICES=1 ./scripts/serve_gpu_model.sh breeze
+
+# Choose one LLM server, or neither when using OpenAI:
+CUDA_VISIBLE_DEVICES=2 ./scripts/serve_gpu_model.sh hybrid_diffusion
+# OR, after stopping the other LLM server:
+CUDA_VISIBLE_DEVICES=2,3 ./scripts/serve_gpu_model.sh qwen
 ```
+
+The Nemotron helper still defaults to port 8080. **Do not stop Jupyter to free
+that port on Vast.** After preparing and checksum-verifying the pinned binary and
+GGUF above, use this alternative launch in the Nemotron terminal for port 18080
+(with no inherited `NEMO_SPEECH_*` overrides):
+
+```bash
+CUDA_VISIBLE_DEVICES=0 "$NEMO_BIN" serve --host 127.0.0.1 --port 18080 --no-ui \
+  --asr-model "$NEMO_MODEL_PATH" --backend cuda \
+  --asr.endpointing.enable=false --asr.batching.enabled=false \
+  --nmt.enabled=false --tts.enabled=false
+```
+
+Stop only HybridDiffusion before replacing it with Qwen; leave Nemotron and
+Breeze running. The Qwen runtime install/download can happen before that switch.
 
 These scripts perform no installation/download and fail for missing local assets
 or wrong source revisions. They bind only `127.0.0.1`; startup uses offline model
@@ -170,10 +213,17 @@ ssh -N -o ExitOnForwardFailure=yes \
   -L 127.0.0.1:30000:127.0.0.1:30000 your-gpu-host
 ```
 
-Wait for all servers to report ready, then:
+For Nemotron on 18080, replace both 8080 values in its tunnel mapping with 18080
+and set `STT_BASE_URL=ws://127.0.0.1:18080/v1/audio/transcriptions/realtime` on the
+app command. Omit the 30000 forward when the LLM is OpenAI.
+
+Wait for the selected servers to report ready, then start the conversation-only
+connectivity check below. Add `GPU_LLM_PROVIDER=qwen` or `GPU_LLM_PROVIDER=openai`
+to select that LLM; an unset selector remains HybridDiffusion. For clinician tools,
+use the [README's agent launch command](../README.md#nemotron--breeze-with-a-selectable-llm).
 
 ```bash
-LIVE_API_ENABLED=true ./scripts/voice_gpu.sh
+AGENT_MODE=conversation LIVE_API_ENABLED=true ./scripts/voice_gpu.sh
 ```
 
 Open `http://127.0.0.1:7860/client/`. Start with synthetic English speech. The
@@ -202,9 +252,9 @@ Two upstream protocol limits remain important during that check:
   does not prove server cancellation. Its PCM stream has no semantic completion
   marker, so a clean even-length EOF cannot prove every word was synthesized.
 
-Stop the model servers/tunnel with Ctrl-C. Start the existing local-speech or
-OpenAI path to roll back; neither the default configuration nor private `.env`
-needs replacing. This guide does not initialize Git, commit, or push anything.
+Stop or restart model servers and tunnels manually. Use an OpenAI launcher from
+the README to switch back; do not replace private `.env` settings or reinstall
+application dependencies as part of switching providers.
 
 ### Inspected source references
 
@@ -212,16 +262,3 @@ needs replacing. This guide does not initialize Git, commit, or push anything.
 - [NeMo build presets](https://github.com/NVIDIA/NeMo-Speech.cpp/blob/07003daa7eefea542076310722ccaa89709ee3c3/docs/build.md), [server flags](https://github.com/NVIDIA/NeMo-Speech.cpp/blob/07003daa7eefea542076310722ccaa89709ee3c3/app/serve.cpp)
 - [Breeze API CLI](https://github.com/breezeblue-ai/breeze-tts/blob/008f769016b0a24711becd7a4925030bc93f608c/breeze_infer/api.py), [requirements](https://github.com/breezeblue-ai/breeze-tts/blob/008f769016b0a24711becd7a4925030bc93f608c/requirements.txt), [CUDA recipe](https://github.com/breezeblue-ai/breeze-tts/blob/008f769016b0a24711becd7a4925030bc93f608c/docker/Dockerfile)
 - [HybridDiffusion setup](https://github.com/yuchen-zhu-zyc/HybridDiffusion/blob/6ca547aebb72bfe897e80e0a683c776789e5f38c/eval/scripts/setup_eval_env.sh), [serving](https://github.com/yuchen-zhu-zyc/HybridDiffusion/blob/6ca547aebb72bfe897e80e0a683c776789e5f38c/eval/scripts/serve.sh)
-
-### Offline implementation checkpoint
-
-- **587 offline tests passed**, including native Pipecat construction, fake
-  WebSocket/HTTP/SSE protocol tests, cancellation/late-result guards, streaming
-  PCM validation, native context keepalives, and stubbed launcher contracts.
-- `uv lock --check --offline --no-python-downloads`, Python compilation, both
-  launcher syntax checks and `voice_gpu.sh --check-config` passed.
-- Fingerprinted private `.env`, dependency files, Compose, fixtures, migrations,
-  and existing local STT/TTS/splitting implementations were unchanged.
-- No dependencies were installed, model weights downloaded, or native GPU
-  inference executed in this implementation pass. Only protocol/mock backends
-  were exercised; real GPU/browser validation remains outstanding.

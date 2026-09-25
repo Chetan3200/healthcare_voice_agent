@@ -352,13 +352,13 @@ def _import_local_dependency(module_name: str, package: str):
         elif reason == "macos_library_policy":
             detail = (
                 "macOS blocked a native library. The targeted reinstall may have omitted this "
-                "dependency; follow docs/local-speech.md from a normal Terminal. "
+                "dependency; follow README.md#local-speech-compatibility from a normal Terminal. "
                 "Do not disable macOS security checks."
             )
         elif reason == "missing_dependency":
             detail = "A required dependency is missing. Install the voice and local-voice extras."
         else:
-            detail = "Native import failed. See docs/local-speech.md for a direct import diagnostic."
+            detail = "Native import failed. See README.md#local-speech-compatibility for troubleshooting."
         raise ProviderDependencyError(f"Local dependency {package} failed [{reason}]. {detail}") from None
 
 
@@ -499,7 +499,7 @@ def _create_kokoro_runtime(cpu_threads: int = 2):
                                        providers=["CPUExecutionProvider"])
         return kokoro.from_session(session, str(folder / "voices-v1.0.bin"))
     except Exception:
-        raise ProviderDependencyError("Kokoro could not load its ONNX model or phonemizer. See the normal-Terminal reinstall instructions in docs/local-speech.md.") from None
+        raise ProviderDependencyError("Kokoro could not load its ONNX model or phonemizer. See the normal-Terminal reinstall instructions in README.md#local-speech-compatibility.") from None
 
 
 def _get_kokoro_runtime(*, cpu_threads: int | None = None):

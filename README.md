@@ -1,299 +1,221 @@
 # Healthcare Voice Agent
 
-A Python project for a synthetic fracture-clinic assistant. All patients,
-clinical records and predictions are fictional test data. The clinician profile
-can separately retrieve external public web guidance through Exa.
+Synthetic fracture-clinic voice agents built with Python, PostgreSQL and Pipecat.
+All patient records, predictions and appointments are fictional. This is a local
+demo, not production authentication or a system for real patient data.
 
-## Current implementation status
+- **Front desk:** book, reschedule and cancel appointments in an isolated demo database.
+- **Clinician:** select a case and read clinical records; optional external guidance through Exa.
+- **Conversation:** a basic voice-connectivity mode without clinical tools or a database.
 
-- Present: Alembic database schema, deterministic synthetic fixtures, safe seed
-  loader, Pydantic tool contracts, validated provider configuration, three provider
-  factories, a minimal browser voice runtime, per-session traces, four separate
-  front-desk tool contracts and a transactional booking backend, an isolated
-  synthetic front-desk voice profile with trusted direct-request authorization, a
-  read-only clinician profile with Exa guidance retrieval, and offline tests.
-- Not implemented: production authentication/identity resolution, guaranteed
-  audible-step resumption and semantic backchannel handling. Exa is external
-  unversioned guidance, not clinic-approved policy. Setup does not generate embeddings.
-- The runtime uses Pipecat's bundled UI and a simple connectivity-demo prompt.
-  Its microphone, live provider access, and audible reconnect checkpoint still
-  require a manual live test; passing offline tests does not establish that.
-- The separate synthetic PostgreSQL demo has passed live booking/constraint checks.
-  Offline tests do not establish real model access, browser playback or voice quality.
+## Demo recordings
 
-## Isolated appointment-booking demo
+[Watch the demo recordings on Google Drive](https://drive.google.com/drive/folders/1v54tiLTUsC-Ek2aI4ZPXAyyYkpKNDAOH?usp=sharing).
 
-The separate front-desk profile uses OpenAI STT, LLM and TTS, a fictional fixed
-patient, and its own PostgreSQL database on port `55432`. It does not copy or
-modify the existing clinic database. See [setup, safeguards and testing](docs/frontdesk-demo.md).
+- **Front-desk agent:** `frontdesk-agent.mp4`
+- **Clinician agent:** `clinician-agent.mp4`
+- **Background-task handling:** `background-task-test.mp4`
+
+## Setup
+
+Use Python **3.11.16** (see `.python-version`), `uv`, and Docker with Compose v2
+for the databases. Run commands from the repository root.
 
 ```bash
-./scripts/voice_frontdesk_demo.sh --check     # no model calls
+uv sync --locked --extra voice
+.venv/bin/python scripts/setup_env.py
+.venv/bin/python -m healthcare_voice_agent --check-config
+```
+
+`setup_env.py` preserves an existing `.env`; on a fresh checkout it creates a
+private file with a generated database password. Add provider keys privately:
+`OPENAI_API_KEY` for any OpenAI stage and optional `EXA_API_KEY` for guidance search.
+Use `.env.example` as a reference, never overwrite existing credentials with it.
+
+The configuration check starts no services or provider requests. Live access
+requires `LIVE_API_ENABLED=true`. Connecting the browser to an OpenAI profile can
+incur charges; guidance searches use Exa. Keep the application and model servers
+on loopback, and use SSH tunnels for remote GPU servers.
+
+## Clinical database
+
+Required for the clinician, not for the isolated front desk or conversation mode.
+These are explicit setup actions, not automatic application-startup behavior:
+
+```bash
+docker compose up -d --wait
+.venv/bin/alembic upgrade head
+.venv/bin/python scripts/check_db.py
+.venv/bin/python scripts/seed.py --dry-run
+.venv/bin/python scripts/seed.py --apply
+.venv/bin/python scripts/seed.py --verify-db
+```
+
+- Alembic owns the schema. Add new revisions; never rewrite applied migrations.
+- Keep credentials when reusing a PostgreSQL volume. Editing `.env` does not
+  change the password stored in PostgreSQL. Set `DB_PORT=5433` before startup if
+  the default port is occupied.
+- Do not use `docker compose down -v` or downgrade the schema during normal setup.
+- Seeding inserts missing rows transactionally, skips identical rows, and aborts
+  on conflicts without overwriting or deleting existing rows. If the connection
+  fails near commit, run `--verify-db` before retrying.
+- Fixtures and their manifest are versioned together. Do not change hashes to
+  hide validation failures. Optional `.venv/bin/python scripts/seed.py --check-invalid-db`
+  checks invalid rows inside rolled-back transactions; it is not required for startup.
+
+## Run the agents
+
+The launchers use the existing environment. They do not install dependencies,
+apply migrations, seed databases or download models. Stop an old process before
+reusing its port; restart the server to apply changed settings.
+
+### Front desk
+
+Uses OpenAI STT, LLM and TTS. Its synthetic database is separate from the clinical
+one: `frontdesk_synthetic_demo` on `127.0.0.1:55432`, fixed case `1042`, clinic
+`DEMO-CLINIC`, timezone `Asia/Kolkata`.
+
+```bash
+# Explicit preparation when missing or out of date, with the agent stopped:
+.venv/bin/python scripts/setup_frontdesk_demo.py --prepare
+./scripts/voice_frontdesk_demo.sh --check
 LIVE_API_ENABLED=true ./scripts/voice_frontdesk_demo.sh
 ```
 
-Open `http://127.0.0.1:7862/client/`. Clicking Connect starts paid OpenAI services.
-The front desk uses **one Pipecat Flows node with seven native tools**, all
-available throughout the conversation. The LLM interprets requests and writes
-ordinary replies directly. There are no conversation phases, Python phrase/time
-parsers, extra confirmation turns or audio-delivery gates for slot selection.
-Python keeps structured transaction checks, duplicate-write protection and
-uncertain-write recovery; the database enforces ownership and availability.
-Booking and rescheduling also require `requested_starts_at`, checked against the
-persisted slot start before preparation. This is a consistency guard, not a
-second speech parser.
+Open **http://127.0.0.1:7862/client/** and Connect. Preparation starts only the
+isolated demo container, migrates, seeds and publishes slots; it does not modify
+the clinical database. `--check` is read-only and makes no model calls.
 
-**Start reading:** `demo/flow.py` → `demo/tools.py` → `booking/service.py`
-under `src/healthcare_voice_agent/`. See [the short flow guide](docs/frontdesk-demo.md)
-for the complete code map, safeguards and manual checks.
+If the canonical fixture appointment should appear in front-desk listings, run
+`.venv/bin/python scripts/setup_frontdesk_demo.py --link-existing` after preparation.
+This only links provenance; it does not change the appointment or publish slots.
 
-The database must be at revision **005** for direct-request authorization.
-This adds a migration but no dependency. If necessary, explicitly prepare the isolated database
-with `.venv/bin/python scripts/setup_frontdesk_demo.py --prepare` while the server
-is stopped. To link the canonical existing follow-up into the front-desk listing,
-run `.venv/bin/python scripts/setup_frontdesk_demo.py --link-existing` after preparation.
-This separate, idempotent data-only action preserves the appointment itself and
-does not migrate, start containers, or publish slots. Existing additional demo
-bookings are preserved; the canonical seeder refuses changed original fixture rows.
-Syntax/import checks are not
-live-model or browser-audio verification; the new flow needs a manual live pass.
+The agent uses native Pipecat tools. Python enforces ownership, exact slot details,
+duplicate protection and uncertain-write recovery. Clear booking/change requests
+use direct-request authorization without requiring an extra confirmation turn.
 
-## Read-only clinician demo
+### Clinician
 
-A separate **single-node assistant with five clinical tools plus `open_case`**
-uses the existing synthetic clinical database. It starts with no selected patient;
-say “Open case 1042” or search by name and clarify the case. It returns study metadata, stored model results, reviewed
-reports, appointments and source-bounded Exa excerpts. It cannot book or modify
-records. It combines Smart Turn with Pipecat's native LLM incomplete-turn filtering
-for hesitant speech; front-desk turn handling is unchanged. Keep existing
-database/OpenAI settings; add `EXA_API_KEY` privately.
+Uses the clinical database above. The OpenAI launcher defaults to synthetic user
+`SYN-USER-CLIN`; no patient is preselected.
 
 ```bash
 ./scripts/voice_clinician.sh --check
 LIVE_API_ENABLED=true ./scripts/voice_clinician.sh
 ```
 
-Open `http://127.0.0.1:7863/client/`. See [setup, verification and the five difficult
-voice scenarios](docs/clinician-demo.md). No installs, migrations or paid calls
-were performed to implement this profile. Exa live behavior is unverified; key
-presence alone is not provider validation. Clinical reads and case selection were
-checked against PostgreSQL. See [50 varied test queries and expected outcomes](docs/clinician-test-queries.md).
-Failed case selections now clear old context without replaying the failed request;
-study metadata exposes pending/failed current model status separately from completed
-historical IDs. Both profiles record hashes of loaded role/tool definitions for
-version verification. Restart servers manually before live retesting these changes.
-For a guided walkthrough of both agents, use [the demo conversations](docs/voice-demo-conversations.md):
-caller lines, expected tool use, selected edge cases, and delay/interruption cues.
+Open **http://127.0.0.1:7863/client/** and start with “Open case 1042.” Clinical
+reads require successful case selection; ambiguous names require clarification.
+This profile cannot book, reschedule or cancel appointments. Its readiness check
+verifies database access, not OpenAI or Exa keys.
 
-## Prerequisites
+`EXA_API_KEY` is optional: without it, database reads still work and guidance
+search reports a configuration error. Exa results are external guidance, not
+clinic-approved policy. Native Pipecat tasks handle background reads and
+cancellation; Smart Turn determines turn completion without an LLM completion filter.
 
-- uv; this migration was checked with uv 0.9.9.
-- Python 3.11.16, selected by `.python-version`. uv can install it if needed.
-- Docker Desktop or Docker Engine with Compose v2 for database checks.
+Front-desk and clinician launchers default to a 120-second idle timeout, with
+session limits of 600 and 3600 seconds respectively. Override
+`VOICE_IDLE_TIMEOUT_SECONDS` / `VOICE_MAX_SESSION_SECONDS` explicitly; `none`
+disables a limit. `CLINICIAN_DEMO_WEB_SEARCH_DELAY_SECONDS=15` optionally delays
+only the first valid guidance search to exercise background delivery, not to
+measure provider latency.
 
-Run every command below from the repository root. Do not activate the old
-standalone database environment. Dependencies are managed by `pyproject.toml`
-and `uv.lock`, not by a second requirements file.
+### Nemotron + Breeze with a selectable LLM
 
-## Install and run offline checks
-
-For the maintainer's first setup only, run `uv lock` to create `uv.lock`.
-Commit that lockfile. Subsequent checkouts use:
+Prepare the servers and tunnels using the **[GPU setup guide](docs/gpu-models.md)**.
+The following clinician example uses OpenAI as the LLM while keeping speech on the
+GPU servers:
 
 ```bash
-uv sync --locked
-uv run --locked python -m healthcare_voice_agent
-uv run --locked pytest
-uv run --locked python scripts/seed.py --dry-run
-uv run --locked alembic heads
-```
-
-The application entrypoint validates provider settings, saves a non-secret
-`runs/<unique-id>/config.json`, and exits. Without `--serve`, it never constructs
-provider services or calls an API, even if live mode is enabled.
-The offline suite retains the 24 seed tests and 4 project-layout/contract checks,
-and adds configuration, redaction, provider wiring, timeout, and cleanup tests.
-Fixture validation expects 288 normal rows and 92 scenario count checks.
-
-## Provider configuration (no API calls)
-
-```bash
-uv run --locked python -m healthcare_voice_agent --check-config
-```
-
-Defaults: OpenAI streaming transcription (`gpt-live-transcribe`, English input
-hint `languages: ["en"]`), a text/tool LLM (`gpt-4.1-mini-2025-04-14`), and TTS
-(`gpt-4o-mini-tts`, voice `coral`). These are configurable baseline candidates,
-not verified model access or measured performance. Your private `.env` is not
-rewritten; add settings from `.env.example` only when needed.
-
-Live services default to disabled. The factories require explicit opt-in and a
-private API key for any selected OpenAI stage. An entirely self-hosted stack
-needs no OpenAI key. No test budget setting is required.
-
-Install the optional Pipecat/OpenAI dependencies in your normal Terminal:
-
-```bash
-uv sync --locked --extra voice --no-cache --link-mode copy
-uv run --locked --extra voice pytest
-```
-
-An actual-service constructor/cleanup test is skipped without the voice extra.
-With it installed, the test uses a dummy key and blocks network connections; it
-does not start a voice session or validate live APIs. See
-[provider configuration and limitations](docs/providers.md).
-
-## Local browser voice loop (no clinic tools)
-
-First install the updated `voice` extra in your normal Terminal using the command
-above. Add your API key privately and set `LIVE_API_ENABLED=true` in the existing
-`.env`. Do not paste a key into chat or replace existing database settings.
-
-After those prerequisites are satisfied:
-
-```bash
-uv run --locked --extra voice python -m healthcare_voice_agent --serve --env-file .env
-```
-
-Open **http://127.0.0.1:7860/client/**, allow microphone access, and click Connect.
-Speak first. Connecting starts provider services and can incur API usage,
-including streaming silence. Disconnect when finished. Automatic idle and
-session-duration cutoffs are disabled by default; stalled-request and cleanup
-timeouts remain enabled.
-
-A new context, provider set, and `runs/<run-id>/sessions/<id>/events.jsonl` are
-created for every connection. See [startup, logs, and the manual checkpoint](docs/voice-loop.md).
-No database connection is needed for this stage.
-
-## Optional Nemotron / Breeze / HybridDiffusion stack
-
-Opt-in adapters now support Nemotron 3.5 streaming ASR, Breeze TTS 2 streaming
-audio, and HybridDiffusion-2B streamed chat. They connect to separately prepared
-model servers; CUDA packages never enter the app's existing environment.
-
-See **[GPU setup and startup](docs/gpu-models.md)** for pinned runtime/model
-revisions, explicit installation/download steps, GPU launchers, and SSH tunnels.
-After preparing and starting those servers:
-
-```bash
-./scripts/voice_gpu.sh --check-config
+AGENT_MODE=clinician \
+GPU_LLM_PROVIDER=openai \
+STT_LANGUAGE=en TTS_LANGUAGE=en \
+VOICE_PORT=7864 \
+VOICE_IDLE_TIMEOUT_SECONDS=120 VOICE_MAX_SESSION_SECONDS=3600 \
 LIVE_API_ENABLED=true ./scripts/voice_gpu.sh
 ```
 
-The launcher does not install/download anything, change `.env`, or replace the
-OpenAI/Whisper/Kokoro defaults. Offline tests verify protocol and lifecycle
-handling, not GPU inference, model quality, memory fit, or native latency.
+Open **http://127.0.0.1:7864/client/**. Set `GPU_LLM_PROVIDER=qwen` or
+`hybrid_diffusion` only after the corresponding LLM server is ready; an unset
+selector still defaults to HybridDiffusion. The current Qwen pin is
+`Qwen/Qwen3.8-27B-FP8`.
 
-## Front-desk booking tools
+The launcher defaults to Nemotron on `8080`, Breeze on `7861`, and the self-hosted
+LLM on `30000`. Match `STT_BASE_URL`, `TTS_BASE_URL` and, for a self-hosted LLM,
+`LLM_BASE_URL` to your servers/tunnels. On the current Vast setup, Nemotron uses **18080** because
+Jupyter occupies 8080; add
+`STT_BASE_URL=ws://127.0.0.1:18080/v1/audio/transcriptions/realtime` to the command.
+An entirely self-hosted selection needs no OpenAI key; the OpenAI LLM selection does.
 
-Four booking contracts are implemented separately from the five clinician tools:
-`find_available_slots`, `prepare_booking`, `book_appointment`, and
-`get_booking_status`.
+### Conversation-only mode
 
-- [Detailed schemas, response dictionaries, and controller integration](docs/frontdesk-booking.md)
-- [Generated JSON Schemas](docs/contracts/frontdesk-tool-contracts.json)
-- [13 synthetic success/error/recovery examples](docs/contracts/frontdesk-tool-examples.json)
-
-The backend stores slot offers, short holds, drafts, confirmation versions and
-idempotent outcomes. Revision **002** added eight booking tables; new revision
-**003** adds allocation activity and reschedule linkage without rewriting applied
-migrations. Controller-only `list_bookings`, `prepare_reschedule` and
-`reschedule_appointment` support current appointment queries and atomic changes.
-Revision **004** adds expiring cancellation intents and durable outcome receipts.
-Native flow tools wrap cancellation preparation, commit and recovery. The model
-cannot call the receipt/consent-recording backend hooks directly or assert a
-confirmation flag. Revision **005** adds an explicit direct-request authorization
-mode: the session binds the real caller request to the exact target and commits
-without fabricating a readback or requiring another yes.
-The isolated front-desk voice profile wires these operations; the normal voice
-profile remains separate. Production authentication and patient identity
-resolution are still outside this fixed-case synthetic demo.
-
-## Start and verify the database
+Uses the configured providers, defaults to OpenAI, and requires no database:
 
 ```bash
-uv run --locked python scripts/setup_env.py
-docker compose up -d --wait
-uv run --locked alembic upgrade head
-uv run --locked python scripts/check_db.py
+AGENT_MODE=conversation LIVE_API_ENABLED=true \
+  .venv/bin/python -m healthcare_voice_agent --serve
 ```
 
-`setup_env.py` preserves an existing `.env` byte-for-byte. On a fresh checkout it
-creates a private file with a generated database password. `.env.example` is a
-reference, not a file with a usable password. Never commit `.env` or API keys.
-Keep existing credentials when reusing a PostgreSQL volume; changing `.env` does
-not change the password stored inside PostgreSQL. If needed, set `DB_PORT=5433`
-in the private `.env` before starting Docker.
+Open **http://127.0.0.1:7860/client/** with the default `VOICE_PORT`, Connect and
+speak first. Unlike the two agent launchers, default conversation settings have
+no idle or session-duration cutoff; disconnect when finished.
 
-Docker starts PostgreSQL only. Alembic owns schema changes. The existing Compose
-project name and named volume are preserved. Do not run `docker compose down -v`
-or downgrade the applied schema as part of setup.
-
-After explicitly applying the current migration head, `check_db.py` should
-report pgvector, Alembic revision **005**, and **24 clinic tables** (14 baseline,
-eight original booking tables, reschedule linkage, and cancellation receipts). Existing databases are
-not upgraded automatically. Patient count depends on fixture loading; the checker
-inserts no rows. The unchanged revision-001 fixture format is accepted on database
-revisions 001 through 005; it does not seed booking schedules.
-
-## Synthetic fixtures
+## Checks and logs
 
 ```bash
-# No database connection or writes:
-uv run --locked python scripts/seed.py --dry-run
-
-# Read-only verification; requires the fixtures to have been loaded:
-uv run --locked python scripts/seed.py --verify-db
-
-# Explicitly load missing rows when needed, then verify:
-uv run --locked python scripts/seed.py --apply
-uv run --locked python scripts/seed.py --verify-db
+.venv/bin/python -m pytest
 ```
 
-`--apply` inserts missing rows, skips identical rows, and aborts on conflicts.
-It never overwrites or deletes existing rows. Fixture files and their manifest
-are versioned together; do not edit hashes just to make a failed check pass.
+Offline/mock tests are separate from live provider and database checks.
+Some legacy completion-filter and deferred-tool tests still need updating;
+historical pass counts are not a current full-suite result. Optional
+`.venv/bin/python scripts/test_frontdesk_demo_postgres.py --run` performs live,
+isolated PostgreSQL checks and creates retained synthetic QA records.
 
-## Code map
+Before trusting a provider change, verify tool choice/arguments with frozen
+synthetic inputs, then check browser speech, correction, cancellation, barge-in
+and reconnect. Offline tests do not establish model access, audible playback,
+latency or safe handling of real patient data.
 
-- `src/healthcare_voice_agent/`: installable application package.
-- `src/healthcare_voice_agent/config.py`: validated settings and public run records.
-- `src/healthcare_voice_agent/demo/flow.py`: single front-desk node, prompt and native tools.
-- `src/healthcare_voice_agent/demo/tools.py`: native LLM tool handlers.
-- `src/healthcare_voice_agent/demo/runtime.py`: isolated session and direct-action state.
-- `src/healthcare_voice_agent/voice/providers.py`: `build_stt`, `build_llm`, `build_tts`.
-- `src/healthcare_voice_agent/voice/pipeline.py`: provider-neutral pipeline assembly.
-- `src/healthcare_voice_agent/voice/session.py`: per-connection lifecycle and cleanup.
-- `src/healthcare_voice_agent/voice/server.py`: bundled runner adapter, loopback only.
-- `src/healthcare_voice_agent/voice/{tracing,observers,rtvi}.py`: logs and safe UI errors.
-- `src/healthcare_voice_agent/agent/prompts.md`: the non-clinical demo prompt.
-- `src/healthcare_voice_agent/tools/contracts.py`: typed clinician contracts.
-- `src/healthcare_voice_agent/clinician/`: executable read-only clinical tools and Exa retrieval.
-- `scripts/`: environment setup, database checking, and deterministic seeding.
-- `migrations/`: Alembic revisions. Leave applied revision 001 unchanged.
-- `fixtures/`: synthetic clinical/document data and coverage scenarios.
-- `tests/`: offline tests, including real framework assembly and mocked session lifecycles.
-- `evals/`: future frozen conversation scenarios and audio fixtures.
-- `results/`: selected, sanitized evaluation outputs for submission.
-- `runs/`: ignored local runtime output, created when needed.
+Each run writes `runs/<run-id>/config.json`; connections have separate
+`sessions/<id>/events.jsonl` files. Traces include transcripts and generated/TTS
+text, but no raw audio. Credential redaction is **not** general PHI redaction.
+Keep logs private, use synthetic inputs, and distinguish server timing from
+what was actually heard in the browser. Exact interrupted-audio resumption is
+not guaranteed.
 
-## Submission notes
+## Local speech compatibility
 
-Start reviewers at `docs/frontdesk-demo.md`, then `demo/flow.py` and `demo/tools.py`.
-Include source, `pyproject.toml`, `uv.lock`, migrations, synthetic fixtures and docs.
-Do not include `.env`, `.venv`, `.demo`, local model caches, or unsanitized `runs/`.
-The new flow has had local syntax/import checks, not a completed live voice evaluation.
+Whisper/Kokoro provider code and the optional `local-voice` extra remain; their
+old launcher and benchmarks have been retired. They are not used by the front-desk
+or clinician profiles. Apple Silicon local experiments require an explicit
+`uv sync --locked --extra voice --extra local-voice` and correctly configured
+local providers; `--prepare-local-models` explicitly prepares their pinned assets.
 
-## More detail
+For native loading failures, use a normal Terminal and reinstall the named failing
+package with the locked extras, for example:
 
-- [Local Kokoro + Whisper turbo paired experiment](docs/local-speech.md)
-- [Browser voice loop, logs, and manual checkpoint](docs/voice-loop.md)
-- [Provider configuration, factories, and timeout semantics](docs/providers.md)
-- [Database design](docs/database.md)
-- [Seeding, fixture cases, and limitations](docs/seeding.md)
-- [JSON tool contracts and examples](docs/contracts/)
+```bash
+uv sync --locked --extra voice --extra local-voice --no-cache --link-mode copy \
+  --reinstall-package PACKAGE_NAME
+```
 
-The fixture coverage scenarios are not a completed voice-evaluation suite.
-Live tests require model access. Record measured results separately from
-configuration or constructor checks. OpenAI credentials are not needed for the
-offline checks.
+Replace `PACKAGE_NAME` with the failing dependency. Do not disable Gatekeeper,
+re-sign third-party libraries or clear quarantine flags. Reinstalling packages
+does not fix missing Metal GPU access; use a normal local graphical Terminal.
+
+## Code and contract references
+
+- `src/healthcare_voice_agent/demo/` and its sibling `booking/`: front-desk flow and backend.
+- `src/healthcare_voice_agent/clinician/` and its sibling `tools/`: clinical reads and contracts.
+- `src/healthcare_voice_agent/voice/`: providers, pipeline, browser sessions and tracing.
+- `src/healthcare_voice_agent/agent/prompts.md`: runtime prompt for conversation-only mode.
+- `scripts/`: explicit setup, database checks and launchers; `migrations/`: schema revisions.
+- `fixtures/`: synthetic seed data and validation scenarios; `evals/`: evaluation inputs.
+- [Contract schemas and examples](docs/contracts/): retained JSON references and test inputs.
+- [GPU setup](docs/gpu-models.md): separate model environments, downloads and serving.
+
+Keep `.env`, private keys, `.venv`, `.demo`, model weights, logs and generated
+results out of Git. Clinical identity/access handling here is a synthetic demo,
+not a production authorization system.
