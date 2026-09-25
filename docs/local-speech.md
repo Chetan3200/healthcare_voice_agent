@@ -1,39 +1,15 @@
-# Local speech experiment: Kokoro + Whisper large-v3-turbo
+# Archived local speech experiment: Kokoro + Whisper large-v3-turbo
+
+The experiment's launcher and benchmark helpers have been retired. These notes
+preserve historical implementation and verification details, not current startup
+instructions. See [the README](../README.md) and [GPU setup](gpu-models.md) for
+current launch commands.
 
 This profile replaces **both speech stages together**, as requested. The text LLM
 remains the configured OpenAI model. It is not an all-local agent, and it does not
 use another hosted provider. OpenAI speech remains the default outside this profile.
 
-## Run from a normal Terminal
-
-```bash
-cd /Users/chetan/Documents/healthcare_voice_agent
-uv sync --locked --extra voice --extra local-voice
-./scripts/voice_local.sh --prepare-local-models
-./scripts/voice_local.sh --check-config
-# Stop the previous server first if it occupies port 7860.
-./scripts/voice_local.sh
-```
-
-Open http://127.0.0.1:7860/client/ and Connect. Use synthetic speech only.
-`LIVE_API_ENABLED=true` and the existing private `OPENAI_API_KEY` are still required
-for the OpenAI LLM. The wrapper does not enable paid API use or edit `.env`.
-Preparation downloads public model files, not API inference. Config checking is
-fully offline and does not import native local model packages.
-
-The launcher applies process-local overrides over `.env`, including clearing the
-OpenAI STT/TTS endpoint fields. It uses `uv run --no-sync --no-python-downloads`,
-so launching never installs or upgrades packages or downloads Python. Any needed
-installation is an explicit user-run `uv sync` step. It uses standard HTTP Hugging Face downloads rather
-than the optional native Xet downloader. Downloads are cached under ignored
-`models/local-voice/` (roughly 2 GB total). Never commit model binaries. Models are
-loaded and warmed with synthetic input **before** the server accepts connections;
-serving uses cached files only and never downloads models in a live speech turn.
-Preparation and serving use the same allowlist (`config.json`, `weights.safetensors`);
-unneeded repository files such as README and .gitattributes are not prerequisites.
-Cold process startup can take longer than subsequent speech turns.
-
-### macOS loading errors
+## macOS loading errors
 
 If macOS rejects a native library, do not disable Gatekeeper, re-sign third-party
 binaries, or clear quarantine flags. Try installation from your normal Terminal:
@@ -84,7 +60,7 @@ revision, Kokoro release/checksums, runtimes and package versions are recorded i
 
 Kokoro preserves the supplied text and delivers 24 kHz mono PCM16 in at most
 `TTS_AUDIO_CHUNK_MS` chunks (100 ms default). It does not accept OpenAI delivery
-instructions; the wrapper sets `TTS_INSTRUCTIONS=off`. Text aggregation remains
+instructions; the experiment used `TTS_INSTRUCTIONS=off`. Text aggregation remains
 Pipecat's normal aggregation. For the first request in each audio context, the
 adapter chooses at most one conservative punctuation boundary near a soft
 60-character target, looking up to twice that target when necessary. Both sides
@@ -168,15 +144,8 @@ Changing both stages tests the requested pair, but does not attribute a speed or
 quality difference to just one model. Stop after the fixed comparison for review.
 Do not wire clinical tools into this experiment yet.
 
-Rollback: stop the paired server and run the existing command without the wrapper:
-
-```bash
-uv run --locked --extra voice python -m healthcare_voice_agent --serve --env-file .env
-```
-
-The wrapper's variables do not persist in the parent shell. Provider changes
-require a server restart, not just a browser reconnect. Do not run `uv sync` or
-change extras underneath a running server.
+Provider changes require a server restart, not just a browser reconnect. Do not
+run `uv sync` or change extras underneath a running server.
 
 ## Offline verification
 
@@ -263,42 +232,6 @@ that environment. No dependencies, model files, quarantine attributes or securit
 settings were changed. Native timing and listening verification are **blocked**
 there, not evidence of slow or fast optimized hardware execution.
 
-### Fixed native comparison from a normal Terminal
-
-From the project root, use the existing environment and a new output directory:
-
-```bash
-./scripts/benchmark_speech_optimizations.sh results/speech-comparison-1
-```
-
-The script never installs, downloads, reads `.env`, or calls OpenAI. It runs a
-fixed four-input synthetic English/Hindi/Hinglish comparison and then stops:
-
-1. Kokoro: CPU threads 2 versus 4, whole-request versus a conservative punctuation
-   split near 60 characters, two repetitions per case/setting. Model/voice/speed are fixed. It
-   records first PCM, total synthesis, generated duration and event-loop lag.
-   Estimated gaps use accumulated generated audio and are **not real playback**.
-2. Whisper: stock versus single-encode on the exact same four baseline Kokoro
-   WAVs, validated by checksum and resampled once to 16 kHz, two repetitions.
-   It records time, output text, language, fallback path and synthetic-reference
-   WER. This WER is only a TTS-derived proxy, not human/held-out ASR accuracy.
-3. Inspect `summary.json`, `whisper/summary.json` and any output mismatches before
-   further tuning. The script does not auto-select settings or rewrite `.env`.
-
-Raw rows and the synthetic WAV manifest are retained. A native failure produces
-a sanitized `blocked.json`; it is not counted as a successful timing result.
-WebRTC/browser latency and audible quality still need a listening session.
-
-To compare the original local speech behavior, restart with:
-
-```bash
-STT_REUSE_ENCODER=false TTS_FIRST_CHUNK_CHARS=0 TTS_CPU_THREADS=2 ./scripts/voice_local.sh
-```
-
-The normal `./scripts/voice_local.sh` command uses the optimized defaults. OpenAI
-speech defaults, the OpenAI LLM, prompts, database, fixtures and migrations remain
-unchanged.
-
 ### Optimization-pass offline verification
 
 - **449 tests passed** after integration, including single-decode eligibility,
@@ -309,9 +242,9 @@ unchanged.
   syntax checks passed. All 15 fingerprinted protected project files (including
   private `.env`, prompts, dependency files, Compose, fixtures and migrations)
   were unchanged.
-- Native timing, actual transcript comparison and audible join quality remain
-  **[blocked]** until the fixed benchmark/listening check runs in a native-enabled
-  normal Terminal. CPU thread default was deliberately not changed without data.
+- Native timing, actual transcript comparison and audible join quality were not
+  verified for this historical optimization pass. CPU thread default was
+  deliberately not changed without data.
 
 ### Conservative phrase-boundary correction
 

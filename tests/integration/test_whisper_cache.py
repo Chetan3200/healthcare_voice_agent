@@ -2,7 +2,6 @@
 
 import json
 import socket
-from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -89,10 +88,3 @@ def test_initialization_error_does_not_prescribe_redownload(cache, error):
     assert "private-marker" not in message
     if isinstance(error, ImportError):
         assert "Metal GPU access" in message
-
-
-def test_launcher_never_synchronizes_dependencies():
-    launcher = Path(__file__).resolve().parents[2] / "scripts/voice_local.sh"
-    invocation = launcher.read_text().split('exec "$UV_BIN"', 1)[1]
-    assert "--no-sync" in invocation
-    assert "--no-python-downloads" in invocation
