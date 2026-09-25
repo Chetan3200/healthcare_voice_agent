@@ -90,6 +90,7 @@ def test_bad_switches_never_fall_back_to_old_patient():
             ({'case_id': '9999', 'patient_name': None}, 'CASE_NOT_FOUND'),
             ({'case_id': '1042'}, 'INVALID_ARGUMENT'),
             ({'case_id': '1042', 'patient_name': 'Arjun'}, 'INVALID_ARGUMENT'),
+            ({'case_id': '1042', 'patient_name': 'None'}, 'INVALID_ARGUMENT'),
             ({'case_id': None, 'patient_name': None}, 'INVALID_ARGUMENT'),
         ]:
             await select(session)
@@ -314,10 +315,38 @@ def test_prompt_and_tool_descriptions_preserve_missing_fields_and_request_scope(
     tools = {tool.name: tool for tool in functions()}
     study_description = ' '.join(tools['get_study'].description.split())
     assert 'Never substitute either for a missing performed_at' in study_description
-    assert 'image_ref=None means no image-viewing reference is available' in study_description
+    assert 'image_ref=null means no image-viewing reference is available' in study_description
     assert 'Unknown laterality must remain unknown' in study_description
     appointment_description = ' '.join(tools['get_appointments'].description.split())
     assert 'not as a routine companion to a study or report lookup' in appointment_description
+
+
+def test_nullable_tool_fields_explicitly_describe_json_null():
+    from healthcare_voice_agent.clinician.case_selection import OPEN_CASE
+    from healthcare_voice_agent.tools.contracts import TOOLS
+
+    exposed_tools = {tool.name: tool for tool in functions()}
+    nullable_fields = []
+    for name, contract in {'open_case': OPEN_CASE, **TOOLS}.items():
+        schema = contract.arguments_model.model_json_schema()
+        for field, field_schema in schema['properties'].items():
+            if not any(option.get('type') == 'null'
+                       for option in field_schema.get('anyOf', [])):
+                continue
+            nullable_fields.append((name, field))
+            assert field in schema['required']
+            description = exposed_tools[name].properties[field]['description']
+            assert 'JSON null' in description
+            assert 'Never send the strings "None" or "null"' in description
+    assert len(nullable_fields) == 9
+
+
+def test_null_like_record_strings_are_not_silently_repaired():
+    from healthcare_voice_agent.tools.contracts import GetStudyArgs
+
+    assert GetStudyArgs(case_id='1042', study_id=None).study_id is None
+    for value in ('None', 'null'):
+        assert GetStudyArgs(case_id='1042', study_id=value).study_id == value
 
 
 def test_model_dependency_history_and_score_prompt_rules_are_wired():

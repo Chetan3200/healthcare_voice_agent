@@ -10,10 +10,11 @@ from healthcare_voice_agent.tools.contracts import (
 class OpenCaseArgs(ContractModel):
     case_id: RecordId | None = Field(description=(
         "Four-digit case ID normalized from the caller's spoken number, e.g. 'ten forty-two' "
-        "means '1042', or null for a name search. Preserve explicit leading zeros; never "
-        "guess missing digits. Clear spoken numbers need no extra confirmation."))
+        "means '1042', or JSON null for a name search. Preserve explicit leading zeros; never "
+        "guess missing digits. Clear spoken numbers need no extra confirmation. "
+        'Never send the strings "None" or "null".'))
     patient_name: Annotated[StrictStr, Field(min_length=1, max_length=120)] | None = Field(
-        description="Patient name/name fragment for identity candidates only, or null when opening an exact case ID.")
+        description='Patient name/name fragment for identity candidates only, or JSON null when opening an exact case ID. Never send the strings "None" or "null".')
 
     @model_validator(mode="after")
     def one_identifier(self):
